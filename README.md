@@ -6,7 +6,7 @@ or play them in real time
 
 To compile with either SDL2 or SDL3 use the CMake switch: `USE_SDL2` or `USE_SDL3`.
 
-**NOTE:** On `MSYS2`. `SDL3` is currently preferred because `std::chrono` microseconds timing is not precise at all. MIDI playback is still in microseconds timer-based (microseconds polling) instead of interrupt/callback driven.
+**NOTE:** On `MSYS2`. `SDL3` is currently preferred because `std::chrono` microsecond timing is not precise at all. MIDI playback is still timer-based (polling at microseconds intervals) instead of interrupt/callback driven.
 
 ## Digital sound files
 
