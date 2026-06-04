@@ -304,6 +304,14 @@ macro_test(
 )
 
 macro_test(
+    EXE TestIMFFile
+    FILES "files/TestIMFFile.cpp"
+    LINKS_PRIVATE hyper-sonic-drivers-static
+    FIXTURES
+        "../fixtures/01.imf"
+)
+
+macro_test(
     EXE TestXMIFile
     FILES "files/miles/TestXMIFile.cpp"
     LINKS_PRIVATE hyper-sonic-drivers-static
