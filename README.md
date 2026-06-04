@@ -1,22 +1,12 @@
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/94519cf7a54248bf96e3de83cc3cc897)](https://www.codacy.com/gh/Raffaello/hyper-sonic-drivers/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Raffaello/hyper-sonic-drivers&amp;utm_campaign=Badge_Grade)
-
-![windows](https://github.com/raffaello/hyper-sonic-drivers/actions/workflows/ci-windows.yml/badge.svg?branch=master)
-![linux](https://github.com/raffaello/hyper-sonic-drivers/actions/workflows/ci-linux.yml/badge.svg?branch=master)
-![macOS](https://github.com/raffaello/hyper-sonic-drivers/actions/workflows/ci-mac.yml/badge.svg?branch=master)
-
 # Hyper-Sonic Drivers
 
 `hyper-sonic-drivers` is `RtAudio` based, supporting `sdl2` or `sdl3` as alternatives, emulating audio of '90s hardware PCs (adlib, OPL3, ...)
-
-**NOTE:** It can compile also with SDL3 using the cmake option `USE_SDL3`
-          (basic integration at the moment)
-
-**NOTE:** The project now supports also `RtAudio`. The `adl-example` currently uses RtAudio Mixer. SDL2 or 3 are mandatory and required  to build and run.
-
-**NOTE:** On `MSYS2`. `SDL3` is currently preferred because `std::chrono` microseconds timing is not precise at all. MIDI playback is still microseconds timer-based (microseconds polling) instead of interrupt/callback driven.
-
 reading some old files too as utility and give the capability to render them in digital format
 or play them in real time
+
+To compile with either SDL2 or SDL3 use the CMake switch: `USE_SDL2` or `USE_SDL3`.
+
+**NOTE:** On `MSYS2`. `SDL3` is currently preferred because `std::chrono` microsecond timing is not precise at all. MIDI playback is still timer-based (polling at microseconds intervals) instead of interrupt/callback driven.
 
 ## Digital sound files
 
@@ -53,7 +43,7 @@ each track is like a format 0 MIDI file with eXtensions.
 - [ ] OPL XMI
 - [ ] MT32 XMI
 - [ ] PCSpeaker XMI
-- [ ] Tandi XMI
+- [ ] Tandy XMI
 
 
 ## Emulators
