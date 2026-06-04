@@ -12,6 +12,7 @@
         "ARGN",
         "buildsystems",
         "cfamily",
+        "chrono",
         "CPACK",
         "CRTCL",
         "ctest",
@@ -99,6 +100,7 @@
         "Wpedantic",
         "XDIR",
         "XMID",
+        "xmidi",
         "xunit",
         "ymfm"
     ],

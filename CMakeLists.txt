@@ -5,7 +5,7 @@ if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
 endif()
 
 
-project ("hyper-sonic-drivers" VERSION 0.19.0 DESCRIPTION "Hyper-Sonic Drivers for emulating old soundcards")
+project ("hyper-sonic-drivers" VERSION 0.19.1 DESCRIPTION "Hyper-Sonic Drivers for emulating old soundcards")
 include (TestBigEndian)
 TEST_BIG_ENDIAN(IS_BIG_ENDIAN)
 if(IS_BIG_ENDIAN)
@@ -50,7 +50,7 @@ endif()
 message(STATUS "USE_SDL3  : ${USE_SDL3}")
 message(STATUS "USE_SDL2  : ${USE_SDL2}")
 message(STATUS "USE_MT32  : ${USE_MT32}")
-message(STATUS "USE_SPDLOG: ${$USE_SPDLOG}")
+message(STATUS "USE_SPDLOG: ${USE_SPDLOG}")
 message(STATUS "GENERATE_CODE_COVERAGE: ${GENERATE_CODE_COVERAGE}")
 
 ##############################################################################
