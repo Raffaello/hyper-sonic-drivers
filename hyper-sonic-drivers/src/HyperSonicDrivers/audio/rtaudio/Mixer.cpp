@@ -42,7 +42,8 @@ void Mixer::resume() noexcept
 
 bool Mixer::onInit_()
 {
-    return init_(rtAudioCallback_, this);
+    return init_(rtAudioCallback_, this) &&
+           m_audio.startStream() == RTAUDIO_NO_ERROR;
 }
 
 void Mixer::onShutdown_()

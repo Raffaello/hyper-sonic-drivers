@@ -10,7 +10,7 @@ constexpr int CALLBACKS_PER_SECONDS = 700;    // 700 hz
 
 void IMFDriver::onCallback_()
 {
-    if (!m_isPlaying)
+    if (!m_isPlaying || m_imf_file == nullptr)
         return;
 
     if (m_delay_ticks > 0)
@@ -69,6 +69,9 @@ void IMFDriver::setIMFFile(const std::shared_ptr<files::IMFFile>& imf_file)
 
 void IMFDriver::play([[maybe_unused]] const uint16_t track) noexcept
 {
+    if (m_imf_file == nullptr)
+        return;
+
     m_delay_ticks = 0;
     m_pos         = 0;
     m_isPlaying   = true;
