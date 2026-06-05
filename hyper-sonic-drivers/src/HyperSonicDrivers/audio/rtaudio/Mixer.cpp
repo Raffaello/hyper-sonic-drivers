@@ -8,6 +8,7 @@ namespace HyperSonicDrivers::audio::rtaudio
 
 using utils::logE;
 using utils::logW;
+using utils::logI;
 
 Mixer::Mixer(const uint8_t  max_channels,
              const uint32_t freq,
@@ -24,13 +25,19 @@ Mixer::~Mixer()
 void Mixer::suspend() noexcept
 {
     if (m_audio.isStreamRunning())
-        m_audio.stopStream();
+    {
+        if (m_audio.stopStream() != RTAUDIO_NO_ERROR)
+            logE("unable to stop audio stream");
+    }
 }
 
 void Mixer::resume() noexcept
 {
     if (!m_audio.isStreamRunning())
-        m_audio.startStream();
+    {
+        if (m_audio.startStream() != RTAUDIO_NO_ERROR)
+            logE(std::format("unable to start audio stream"));
+    }
 }
 
 bool Mixer::onInit_()
@@ -41,7 +48,10 @@ bool Mixer::onInit_()
 void Mixer::onShutdown_()
 {
     if (m_audio.isStreamRunning())
-        m_audio.stopStream();
+    {
+        if (m_audio.stopStream() != RTAUDIO_NO_ERROR)
+            logE("unable to stop audio stream");
+    }
 
     if (m_audio.isStreamOpen())
         m_audio.closeStream();
@@ -61,11 +71,14 @@ bool Mixer::init_(RtAudioCallback callback, void* userdata)
         .firstChannel = 0,
     };
 
+    auto info = m_audio.getDeviceInfo(params.deviceId);
+    logI(std::format("using deviceId={}, {}, {}, {}", params.deviceId, info.name, info.outputChannels, info.currentSampleRate));
+
     RtAudio::StreamOptions options{
         .flags = RTAUDIO_SCHEDULE_REALTIME};
 
     unsigned int bufFrames = buffer_size / sizeof(int16_t) / 2;
-    if (m_audio.openStream(&params, nullptr, RTAUDIO_SINT16, freq, &bufFrames, callback, userdata, &options) != 0)
+    if (m_audio.openStream(&params, nullptr, RTAUDIO_SINT16, freq, &bufFrames, callback, userdata, &options) != RTAUDIO_NO_ERROR)
     {
         logE(std::format("unable to open stream: {}", m_audio.getErrorText()));
         return false;

@@ -6,48 +6,54 @@
 
 // test
 // #include <HyperSonicDrivers/audio/rtaudio/Mixer.hpp>
-// #include <HyperSonicDrivers/drivers/opl/OplWriter.hpp>
-// #include <HyperSonicDrivers/drivers/midi/opl/OplDriver.hpp>
-// #include <HyperSonicDrivers/devices/Adlib.hpp>
+// #include <HyperSonicDrivers/hardware/opl/OPLFactory.hpp>
 // #include <HyperSonicDrivers/utils/algorithms.hpp>
-// #include <array>
 // #include <HyperSonicDrivers/utils/ILogger.hpp>
+// #if HAS_SDL3
+// #include <HyperSonicDrivers/audio/sdl3/Mixer.hpp>
+// #include <SDL3/SDL_main.h>
+// #define MIXER audio::sdl3::Mixer
+// #elif HAS_SDL2
+// #include <HyperSonicDrivers/audio/sdl2/Mixer.hpp>
+// #include <SDL2/SDL_main.h>
+// #define MIXER audio::sdl2::Mixer
+// #else
+// #include <HyperSonicDrivers/audio/rtaudio/Mixer.hpp>
+// #define MIXER audio::rtaudio::Mixer
+// #endif
 
 namespace HyperSonicDrivers::files
 {
+
+void opl_callback()
+{
+    static int delta_ticks = 0;
+    delta_ticks++;
+}
+
 TEST(IMFFile, cstorDefault)
 {
-    IMFFile f("../fixtures/01.imf");
+    IMFFile f("../fixtures/02.imf");
 
     // utils::ILogger::instance->setLevelAll(utils::ILogger::eLevel::Debug);
-    // auto data = f.data();
-    // EXPECT_EQ(data.size(), 2107);
+    auto data = f.data();
+    EXPECT_EQ(data.size(), 2084);
 
-    // auto mixer = audio::make_mixer<audio::rtaudio::Mixer>(4, 44100, 1024);
-    // mixer->init();
+    // TEST
+    // auto mixer = audio::make_mixer<MIXER>(4, 44100, 1024);
+    // ASSERT_TRUE(mixer->init());
 
-    // auto adlib = devices::make_device<devices::Adlib>(mixer);
-    // adlib->init();
+    // auto opl = hardware::opl::OPLFactory::create(hardware::opl::OplEmulator::AUTO, hardware::opl::OplType::OPL2, mixer);
+    // ASSERT_NE(opl, nullptr);
 
-    // auto opl = dynamic_cast<devices::Adlib*>(adlib.get())->getOpl();
+    // ASSERT_TRUE(opl->init());
+    // opl->start(std::make_shared<hardware::TimerCallBack>(opl_callback), audio::mixer::eChannelGroup::Music, 255, 0, opl->setCallbackFrequency(700));
 
-    // drivers::opl::OplWriter opl_writer(opl, false);
-    // opl_writer.init();
-    // opl->init();
-
-    // std::array<bool, 9> used_channels;
-    // used_channels.fill(false);
     // for (const auto& packet : data)
     // {
-    //     uint8_t ch = 1;
-    //     if (packet.reg >= 0xB0 && packet.reg <= 0xB8)
-    //         used_channels[packet.reg & 0x0F] = (packet.val >> 5) & 0x01;
-
-    // opl_writer.writeValue(packet.reg, 0, packet.val);
-    // if (packet.reg >= 0xB0 && packet.reg <= 0xB8)
-    //     used_channels[packet.reg & 0x0F] = (packet.val >> 5) & 0x01;
-    // if (packet.delay_ticks > 0)
-    //     utils::delayMillis(packet.delay_ticks * 700 / 1000);    // 700 MHz timing
+    //     opl->writeReg(packet.reg, packet.val);
+    //     if (packet.delay_ticks > 0)
+    //         utils::delayMicro(packet.delay_ticks * 700 * 2);    // 700 Hz timing
     // }
 }
 
