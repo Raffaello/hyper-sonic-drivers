@@ -304,6 +304,14 @@ macro_test(
 )
 
 macro_test(
+    EXE TestIMFFile
+    FILES "files/TestIMFFile.cpp"
+    LINKS_PRIVATE hyper-sonic-drivers-static
+    FIXTURES
+        "../fixtures/02.imf"
+)
+
+macro_test(
     EXE TestXMIFile
     FILES "files/miles/TestXMIFile.cpp"
     LINKS_PRIVATE hyper-sonic-drivers-static
@@ -320,17 +328,17 @@ macro_test(
     FIXTURES 
         "../fixtures/ADLIB.ADV"
         "../fixtures/ADLIBG.ADV"
-        #"fixutres/ALGDIG.ADV"
+        #"fixtures/ALGDIG.ADV"
         "../fixtures/MT32MPU.ADV"
-        #"fixutres/PASDIG.ADV"
-        #"fixutres/PASFM.ADV"
-        #"fixutres/PASOPL.ADV"
+        #"fixtures/PASDIG.ADV"
+        #"fixtures/PASFM.ADV"
+        #"fixtures/PASOPL.ADV"
         "../fixtures/PCSPKR.ADV"
-        #"fixutres/SBDIG.ADV"
+        #"fixtures/SBDIG.ADV"
         "../fixtures/SBFM.ADV"
         "../fixtures/SBP1FM.ADV"
         "../fixtures/SBP2FM.ADV"
-        #"fixutres/SBPDIG.ADV"
+        #"fixtures/SBPDIG.ADV"
         "../fixtures/TANDY.ADV"
 )
 

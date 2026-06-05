@@ -10,7 +10,7 @@
 
 namespace HyperSonicDrivers::drivers::westwood
 {
-constexpr int callbacks_per_second = 72;
+constexpr int CALLBACKS_PER_SECOND = 72;
 
 constexpr int NUM_CHANNELS = 9;
 constexpr int random_seed  = 0x1234;
@@ -31,7 +31,7 @@ ADLDriver::ADLDriver(
                          m_opl(opl->getOpl())
 {
     std::memset(m_channels.data(), 0, sizeof(m_channels));
-    hardware::TimerCallBack cb = std::bind(&ADLDriver::onCallback, this);
+    hardware::TimerCallBack cb = std::bind_front(&ADLDriver::onCallback, this);
     auto                    p  = std::make_shared<hardware::TimerCallBack>(cb);
 
     // NOTE: it must acquire it due to opl->start setting the callback
@@ -45,7 +45,7 @@ ADLDriver::ADLDriver(
         group,
         volume,
         pan,
-        callbacks_per_second);
+        CALLBACKS_PER_SECOND);
 
     stopAllChannels();
     initDriver_();
@@ -55,6 +55,7 @@ ADLDriver::ADLDriver(
 
 ADLDriver::~ADLDriver()
 {
+    m_opl->stop();
     m_device->release(this);
 }
 
