@@ -196,6 +196,7 @@ target_sources(${LIB_NAME} PRIVATE
     $<$<BOOL:${USE_MT32}>:${CMAKE_CURRENT_SOURCE_DIR}/src/HyperSonicDrivers/drivers/midi/mt32/MT32Driver.cpp>
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/HyperSonicDrivers/drivers/opl/OplWriter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/HyperSonicDrivers/drivers/opl/IMFDriver.cpp
     # --- #
     ${CMAKE_CURRENT_SOURCE_DIR}/src/HyperSonicDrivers/files/File.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/HyperSonicDrivers/files/IFFFile.cpp

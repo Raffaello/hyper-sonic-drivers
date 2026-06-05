@@ -7,6 +7,7 @@
 #include <HyperSonicDrivers/devices/SbPro2.hpp>
 #include <HyperSonicDrivers/audio/rtaudio/Mixer.hpp>
 #include <HyperSonicDrivers/files/IMFFile.hpp>
+#include <HyperSonicDrivers/drivers/opl/IMFDriver.hpp>
 
 #include <spdlog/spdlog.h>
 #include <fmt/color.h>
@@ -57,29 +58,17 @@ void imf_test(const OplEmulator emu, const OplType type, std::shared_ptr<audio::
         break;
     }
 
-    if (device == nullptr)
-        return;
+    drivers::opl::IMFDriver imf_driver(device, audio::mixer::eChannelGroup::Music);
+    imf_driver.setIMFFile(imfFile);
 
-    // ADLDriver adlDrv(device, audio::mixer::eChannelGroup::Music);
-    // adlDrv.setADLFile(adlFile);
-    // adlDrv.play(track);
-    // TEST
-
-    // auto opl = hardware::opl::OPLFactory::create(hardware::opl::OplEmulator::AUTO, hardware::opl::OplType::OPL2, mixer);
-    // ASSERT_NE(opl, nullptr);
-    // ASSERT_TRUE(opl->init());
-    // opl->start(std::make_shared<hardware::TimerCallBack>(opl_callback), audio::mixer::eChannelGroup::Music, 255, 0, opl->setCallbackFrequency(700));
-
-    device->init();
     auto opl = device->getOpl();
-
-    opl->start(nullptr);
     if (!mixer->isReady())
     {
         spdlog::error("mixer not ready yet..");
         return;
     }
 
+    opl->start(nullptr);
     for (const auto& packet : imfFile->data())
     {
         opl->writeReg(packet.reg, packet.val);

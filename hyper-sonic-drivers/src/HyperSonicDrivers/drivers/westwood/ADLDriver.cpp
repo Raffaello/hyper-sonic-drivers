@@ -55,6 +55,7 @@ ADLDriver::ADLDriver(
 
 ADLDriver::~ADLDriver()
 {
+    m_opl->stop();
     m_device->release(this);
 }
 
