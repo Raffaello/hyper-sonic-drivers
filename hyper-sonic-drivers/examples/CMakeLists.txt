@@ -95,6 +95,20 @@ macro_example(
     NONE
 )
 
+macro_example(
+    EXE IMFExample
+    FILE "imf-example.cpp"
+    DEPS hyper-sonic-drivers-static
+    LINKS
+        PRIVATE
+            $<TARGET_NAME_IF_EXISTS:${LIB_SDL}main>
+            hyper-sonic-drivers-static
+            spdlog::spdlog
+    FIXTURES 
+      "../test/fixtures/02.imf"
+    NONE
+)
+
 if(USE_SDL2)
     macro_example(
         EXE ADLPlay
