@@ -10,6 +10,8 @@ constexpr int CALLBACKS_PER_SECONDS = 700;    // 700 hz
 
 void IMFDriver::onCallback_()
 {
+    std::scoped_lock lock(m_mutex);
+
     if (!m_isPlaying || m_imf_file == nullptr)
         return;
 
@@ -61,7 +63,9 @@ IMFDriver::~IMFDriver()
 
 void IMFDriver::setIMFFile(const std::shared_ptr<files::IMFFile>& imf_file)
 {
-    stop();
+    std::scoped_lock lock(m_mutex);
+
+    m_isPlaying   = false;
     m_imf_file    = imf_file;
     m_delay_ticks = 0;
     m_pos         = 0;
@@ -69,6 +73,8 @@ void IMFDriver::setIMFFile(const std::shared_ptr<files::IMFFile>& imf_file)
 
 void IMFDriver::play([[maybe_unused]] const uint16_t track) noexcept
 {
+    std::scoped_lock lock(m_mutex);
+
     if (m_imf_file == nullptr)
         return;
 
@@ -79,11 +85,15 @@ void IMFDriver::play([[maybe_unused]] const uint16_t track) noexcept
 
 void IMFDriver::stop() noexcept
 {
+    std::scoped_lock lock(m_mutex);
+
     m_isPlaying = false;
 }
 
 bool IMFDriver::isPlaying() const noexcept
 {
+    std::scoped_lock lock(m_mutex);
+
     return m_isPlaying;
 }
 

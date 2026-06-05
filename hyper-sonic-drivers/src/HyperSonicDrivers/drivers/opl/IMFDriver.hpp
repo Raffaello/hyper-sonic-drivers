@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <cstdint>
+#include <mutex>
 
 namespace HyperSonicDrivers::drivers::opl
 {
@@ -19,6 +20,8 @@ private:
     uint16_t                            m_delay_ticks = 0;
     bool                                m_isPlaying   = false;
     uint32_t                            m_pos         = 0;
+
+    mutable std::mutex m_mutex;
 
     void onCallback_();
 
