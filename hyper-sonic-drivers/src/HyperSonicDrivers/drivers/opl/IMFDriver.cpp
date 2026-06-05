@@ -45,7 +45,6 @@ IMFDriver::IMFDriver(
     if (!m_device->acquire(this))
         throwLogE<std::runtime_error>("Device is already in used by another driver or can't be init");
 
-
     m_opl->start(
         pOnCallback,
         group,

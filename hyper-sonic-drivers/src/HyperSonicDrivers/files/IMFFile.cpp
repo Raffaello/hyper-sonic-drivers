@@ -16,7 +16,7 @@ IMFFile::IMFFile(
     if (size == 0)
         throw std::invalid_argument(std::format("file {} IMF Type-0 not supported", filename));
 
-    size -= 2;
+    size -= sizeof(uint16_t);
     if (this->size() < size)
         throw std::invalid_argument(std::format("file {} not IMF type", filename));
 
