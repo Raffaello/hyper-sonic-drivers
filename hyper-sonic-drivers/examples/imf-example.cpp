@@ -64,7 +64,7 @@ void imf_test(const OplEmulator emu, const OplType type, std::shared_ptr<audio::
 
     do
     {
-        spdlog::info("is playing");
+        // spdlog::info("is playing");
         delayMillis(1000);
     }
     while (imf_driver.isPlaying());
