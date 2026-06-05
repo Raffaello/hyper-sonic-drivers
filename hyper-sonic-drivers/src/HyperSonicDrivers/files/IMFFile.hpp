@@ -26,9 +26,9 @@ public:
     inline const std::vector<IMF_Packet_t>& data() const noexcept;
     inline bool                             has_tag() const noexcept;
     inline const uint16_t                   tag_unknown() const noexcept;
-    inline const std::string                title() const noexcept;
-    inline const std::string                remarks() const noexcept;
-    inline const std::string                prog() const noexcept;
+    inline const std::string&               title() const noexcept;
+    inline const std::string&               remarks() const noexcept;
+    inline const std::string&               prog() const noexcept;
 
 private:
     std::vector<IMF_Packet_t> m_data;
@@ -55,17 +55,17 @@ inline const uint16_t IMFFile::tag_unknown() const noexcept
     return m_tag_unknown;
 }
 
-inline const std::string IMFFile::title() const noexcept
+inline const std::string& IMFFile::title() const noexcept
 {
     return m_title;
 }
 
-inline const std::string IMFFile::remarks() const noexcept
+inline const std::string& IMFFile::remarks() const noexcept
 {
     return m_remarks;
 }
 
-inline const std::string IMFFile::prog() const noexcept
+inline const std::string& IMFFile::prog() const noexcept
 {
     return m_prog;
 }
