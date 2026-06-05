@@ -40,7 +40,7 @@ IMFDriver::IMFDriver(
     const uint8_t                        pan) : IAudioDriver(opl),
                          m_opl(opl->getOpl())
 {
-    hardware::TimerCallBack cb          = std::bind(&IMFDriver::onCallback_, this);
+    hardware::TimerCallBack cb          = std::bind_front(&IMFDriver::onCallback_, this);
     auto                    pOnCallback = std::make_shared<hardware::TimerCallBack>(cb);
 
     // NOTE: it must acquire it due to opl->start setting the callback

@@ -23,12 +23,12 @@ public:
 
     } IMF_Packet_t;
 
-    inline const std::vector<IMF_Packet_t>& data() const noexcept;
-    inline bool                             has_tag() const noexcept;
-    inline const uint16_t                   tag_unknown() const noexcept;
-    inline const std::string&               title() const noexcept;
-    inline const std::string&               remarks() const noexcept;
-    inline const std::string&               prog() const noexcept;
+    const std::vector<IMF_Packet_t>& data() const noexcept;
+    bool                             has_tag() const noexcept;
+    const uint16_t                   tag_unknown() const noexcept;
+    const std::string&               title() const noexcept;
+    const std::string&               remarks() const noexcept;
+    const std::string&               prog() const noexcept;
 
 private:
     std::vector<IMF_Packet_t> m_data;

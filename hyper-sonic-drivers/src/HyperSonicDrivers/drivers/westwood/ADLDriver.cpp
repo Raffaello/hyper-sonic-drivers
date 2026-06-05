@@ -31,7 +31,7 @@ ADLDriver::ADLDriver(
                          m_opl(opl->getOpl())
 {
     std::memset(m_channels.data(), 0, sizeof(m_channels));
-    hardware::TimerCallBack cb = std::bind(&ADLDriver::onCallback, this);
+    hardware::TimerCallBack cb = std::bind_front(&ADLDriver::onCallback, this);
     auto                    p  = std::make_shared<hardware::TimerCallBack>(cb);
 
     // NOTE: it must acquire it due to opl->start setting the callback
