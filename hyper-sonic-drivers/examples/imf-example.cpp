@@ -63,21 +63,6 @@ void imf_test(const OplEmulator emu, const OplType type, std::shared_ptr<audio::
 
     imf_driver.play(0);
 
-    // auto opl = device->getOpl();
-    // if (!mixer->isReady())
-    // {
-    //     spdlog::error("mixer not ready yet..");
-    //     return;
-    // }
-
-    // opl->start(nullptr);
-    // for (const auto& packet : imfFile->data())
-    // {
-    //     opl->writeReg(packet.reg, packet.val);
-    //     if (packet.delay_ticks > 0)
-    //         utils::delayMicro(packet.delay_ticks * 700 * 2);    // 700 Hz timing
-    // }
-
     // do
     // {
     //     // spdlog::info("is playing");
@@ -85,7 +70,6 @@ void imf_test(const OplEmulator emu, const OplType type, std::shared_ptr<audio::
     // }
     // while (adlDrv.isPlaying());
 
-    // opl->stop();
     device->shutdown();
 }
 

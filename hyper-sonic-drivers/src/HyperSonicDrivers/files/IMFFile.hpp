@@ -23,13 +23,13 @@ public:
 
     } IMF_Packet_t;
 
-    inline const std::vector<IMF_Packet_t>& data() noexcept;
+    inline const std::vector<IMF_Packet_t>& data() const noexcept;
 
 private:
     std::vector<IMF_Packet_t> m_data;
 };
 
-inline const std::vector<IMFFile::IMF_Packet_t>& IMFFile::data() noexcept
+inline const std::vector<IMFFile::IMF_Packet_t>& IMFFile::data() const noexcept
 {
     return m_data;
 }

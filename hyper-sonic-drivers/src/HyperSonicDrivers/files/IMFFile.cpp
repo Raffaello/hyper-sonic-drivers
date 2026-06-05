@@ -34,18 +34,6 @@ IMFFile::IMFFile(
 
         logD(std::format("reg[{}]={} (delay_ticks={})", packet.reg, packet.val, packet.delay_ticks));
         m_data.push_back(packet);
-        // if (packet.reg >= 0xB0 && packet.reg <= 0xB8)
-        //     used_channels[packet.reg & 0x0F] = (packet.val >> 5) & 0x01;
-        // if (packet.delay_ticks != 0)
-        // {
-        //     for (int ch = 0; ch < 9; ++ch)
-        //     {
-        //         if (!used_channels[ch])
-        //             continue;
-
-        // logI(std::format("ch={} used", ch));
-        // }
-        // }
     }
 
     // tag data
