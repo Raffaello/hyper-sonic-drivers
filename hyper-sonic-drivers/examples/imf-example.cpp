@@ -60,15 +60,14 @@ void imf_test(const OplEmulator emu, const OplType type, std::shared_ptr<audio::
 
     drivers::opl::IMFDriver imf_driver(device, audio::mixer::eChannelGroup::Music);
     imf_driver.setIMFFile(imfFile);
-
     imf_driver.play(0);
 
-    // do
-    // {
-    //     // spdlog::info("is playing");
-    //     delayMillis(1000);
-    // }
-    // while (adlDrv.isPlaying());
+    do
+    {
+        spdlog::info("is playing");
+        delayMillis(1000);
+    }
+    while (imf_driver.isPlaying());
 
     device->shutdown();
 }

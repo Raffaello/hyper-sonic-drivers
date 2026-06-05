@@ -10,7 +10,7 @@
 
 namespace HyperSonicDrivers::drivers::westwood
 {
-constexpr int callbacks_per_second = 72;
+constexpr int CALLBACKS_PER_SECOND = 72;
 
 constexpr int NUM_CHANNELS = 9;
 constexpr int random_seed  = 0x1234;
@@ -45,7 +45,7 @@ ADLDriver::ADLDriver(
         group,
         volume,
         pan,
-        callbacks_per_second);
+        CALLBACKS_PER_SECOND);
 
     stopAllChannels();
     initDriver_();

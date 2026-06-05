@@ -6,6 +6,7 @@
 #include <HyperSonicDrivers/hardware/opl/OPL.hpp>
 
 #include <memory>
+#include <cstdint>
 
 namespace HyperSonicDrivers::drivers::opl
 {
@@ -15,6 +16,11 @@ class IMFDriver : public IAudioDriver
 private:
     std::shared_ptr<hardware::opl::OPL> m_opl;
     std::shared_ptr<files::IMFFile>     m_imf_file;
+    uint16_t                            m_delay_ticks = 0;
+    bool                                m_isPlaying   = false;
+    uint32_t                            m_pos         = 0;
+
+    void onCallback_();
 
 public:
     explicit IMFDriver(
