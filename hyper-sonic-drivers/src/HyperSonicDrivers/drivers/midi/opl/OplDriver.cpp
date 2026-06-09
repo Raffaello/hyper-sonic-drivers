@@ -82,20 +82,6 @@ void OplDriver::close()
 
 void OplDriver::onCallback() noexcept
 {
-    // TODO: here has to call the midi player/parser to send the next events.
-    // and update the internal ticks/timer to keep tracks of the deltas
-
-
-    // TODO: here could process midi events,
-    //       enqueued in send method
-    //  if queue empty do nothing
-    // must keep track of the last time it was called
-    // and update is internal timer with the midi-event delta.
-
-    // NOTE changing this onTimer will effect the current MIDDriver using a thread.
-    //      but the same logic of the thread will be performed here.
-
-    [[maybe_unused]] int i = 0;
 }
 
 void OplDriver::pause() const noexcept

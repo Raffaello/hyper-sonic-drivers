@@ -264,6 +264,7 @@ void MIDDriver::onCallback_()
                 break;
             case MIDI_META_EVENT::END_OF_TRACK:
                 logD("MIDI end of track.");
+                m_isPlaying = false;
                 break;
             case MIDI_META_EVENT::INSTRUMENT_NAME:
                 str = utils::chars_vector_to_string_skip_first(e.data);
