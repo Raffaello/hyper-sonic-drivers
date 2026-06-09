@@ -36,16 +36,18 @@ public:
     virtual void pause() const noexcept  = 0;
     virtual void resume() const noexcept = 0;
 
-    virtual void setCallback(hardware::TimerCallBack callback, int timerFrequency) = 0;
+    virtual void setCallback(const hardware::TimerCallBack& callback, int timerFrequency) = 0;
 
 protected:
     audio::mixer::eChannelGroup m_group;
     uint8_t                     m_volume;
     uint8_t                     m_pan;
+    bool                        m_isOpen = false;
 
-    bool                                                                      m_isOpen = false;
     std::array<std::unique_ptr<IMidiChannel>, audio::midi::MIDI_MAX_CHANNELS> m_channels;
-    virtual void                                                              onCallback() noexcept = 0;
+
+
+    virtual void onCallback() noexcept = 0;
 
     // MIDI events
     virtual void noteOff(const uint8_t chan, const uint8_t note) noexcept                   = 0;

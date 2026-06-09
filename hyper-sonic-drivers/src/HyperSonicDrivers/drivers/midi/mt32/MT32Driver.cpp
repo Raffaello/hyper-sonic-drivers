@@ -8,7 +8,7 @@ constexpr void dead_end()
     utils::throwLogC<std::invalid_argument>("can't call this method");
 }
 
-MT32Driver::MT32Driver(const std::shared_ptr<devices::MT32>& mt32) : IMidiDriver()
+MT32Driver::MT32Driver(const std::shared_ptr<devices::MT32>& mt32)
 {
     if (mt32 == nullptr)
         utils::throwLogC<std::runtime_error>("MT32 device is null");

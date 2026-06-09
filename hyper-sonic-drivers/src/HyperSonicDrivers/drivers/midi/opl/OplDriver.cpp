@@ -118,7 +118,7 @@ void OplDriver::resume() const noexcept
     }
 }
 
-void OplDriver::setCallback(hardware::TimerCallBack callback, int timerFrequency)
+void OplDriver::setCallback(const hardware::TimerCallBack& callback, int timerFrequency)
 {
     auto p = std::make_shared<hardware::TimerCallBack>(callback);
     m_opl->start(p, m_group, m_volume, m_pan, timerFrequency);

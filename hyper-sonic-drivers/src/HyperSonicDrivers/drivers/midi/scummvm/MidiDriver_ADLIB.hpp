@@ -34,7 +34,7 @@ public:
     void pause() const noexcept override { /*TODO*/ };
     void resume() const noexcept override { /*TODO*/ };
 
-    void setCallback(hardware::TimerCallBack callback, int timerFrequency) override;
+    void setCallback(const hardware::TimerCallBack& callback, int timerFrequency) override;
 
     uint32_t property(int prop, uint32_t param) override;
     // uint32_t getBaseTempo() override { return 1000000 / hardware::opl::default_opl_callback_freq; }

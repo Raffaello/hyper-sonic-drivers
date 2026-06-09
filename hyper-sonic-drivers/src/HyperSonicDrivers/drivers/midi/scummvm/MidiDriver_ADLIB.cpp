@@ -60,12 +60,13 @@ static AdLibChannel* toAdlibPart(const std::unique_ptr<IMidiChannel>& ap)
     return toAdlibPart(ap.get());
 }
 
-MidiDriver_ADLIB::MidiDriver_ADLIB(const std::shared_ptr<devices::Opl>& opl) : m_opl([&opl] {
+MidiDriver_ADLIB::MidiDriver_ADLIB(const std::shared_ptr<devices::Opl>& opl)
+    : m_opl([&opl] {
             if (opl == nullptr)
                 utils::throwLogC<std::runtime_error>("Device is null ptr");
 
             return opl->getOpl(); }()),
-                                                                               m_opl3Mode(m_opl->type != OplType::OPL2)
+      m_opl3Mode(m_opl->type != OplType::OPL2)
 {
     using audio::midi::MIDI_MAX_CHANNELS;
     using audio::midi::MIDI_PERCUSSION_CHANNEL;
@@ -152,7 +153,7 @@ void MidiDriver_ADLIB::close()
     free(_regCacheSecondary);
 }
 
-void MidiDriver_ADLIB::setCallback(hardware::TimerCallBack callback, int timerFrequency)
+void MidiDriver_ADLIB::setCallback(const hardware::TimerCallBack& callback, int timerFrequency)
 {
     auto p = std::make_shared<hardware::TimerCallBack>(callback);
     m_opl->start(p, m_group, m_volume, m_pan, timerFrequency);
