@@ -1,18 +1,17 @@
-#include <HyperSonicDrivers/audio/sdl3/Renderer.hpp>
-#include <HyperSonicDrivers/audio/sdl3/Mixer.hpp>
+#include <HyperSonicDrivers/audio/Renderer.hpp>
 #include <HyperSonicDrivers/utils/ILogger.hpp>
 #include <algorithm>
 #include <ranges>
 
-namespace HyperSonicDrivers::audio::sdl3
+namespace HyperSonicDrivers::audio
 {
 // MaxRendererFlushIterations defines the maximum number of iterations
 // to attempt flushing the renderer buffer to prevent infinite loops.
 constexpr int MaxRendererFlushIterations = 1000;
 
-Renderer::Renderer(const uint32_t freq, const uint16_t buffer_size, const uint8_t max_channels)
+Renderer::Renderer(const uint16_t buffer_size)
+    : m_buffer_size(buffer_size)
 {
-    m_mixer = make_mixer<Mixer>(max_channels, freq, buffer_size);
 }
 
 void Renderer::openOutputFile(const std::filesystem::path& path)
@@ -31,7 +30,7 @@ void Renderer::renderBuffer(IAudioStream* stream)
     if (m_buf.empty())
     {
         m_out->save_prepare(stream->getRate(), stream->isStereo());
-        m_buf.resize(m_mixer->buffer_size);
+        m_buf.resize(m_buffer_size);
     }
 
     const size_t read = stream->readBuffer(m_buf.data(), m_buf.size());
@@ -44,7 +43,7 @@ bool Renderer::renderFlush(IAudioStream* stream)
     if (m_buf.empty())
     {
         m_out->save_prepare(stream->getRate(), stream->isStereo());
-        m_buf.resize(m_mixer->buffer_size);
+        m_buf.resize(m_buffer_size);
     }
 
     for (int i = 0; i < MaxRendererFlushIterations; i++)
@@ -71,4 +70,4 @@ bool Renderer::renderBufferFlush(IAudioStream* stream, drivers::IAudioDriver& dr
 
     return renderFlush(stream);
 }
-}    // namespace HyperSonicDrivers::audio::sdl3
+}    // namespace HyperSonicDrivers::audio

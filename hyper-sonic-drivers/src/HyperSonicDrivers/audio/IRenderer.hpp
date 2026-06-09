@@ -4,7 +4,6 @@
 #include <filesystem>
 #include <memory>
 #include <vector>
-#include <HyperSonicDrivers/audio/IMixer.hpp>
 #include <HyperSonicDrivers/audio/IAudioStream.hpp>
 #include <HyperSonicDrivers/hardware/opl/OPL.hpp>
 #include <HyperSonicDrivers/devices/IDevice.hpp>
@@ -21,8 +20,6 @@ public:
 
     virtual void openOutputFile(const std::filesystem::path& path) = 0;
     virtual void closeOutputFile() noexcept                        = 0;
-
-    inline std::shared_ptr<IMixer> getMixer() const noexcept { return m_mixer; };
 
     virtual void renderBuffer(IAudioStream* stream) = 0;
 
@@ -46,7 +43,6 @@ public:
     inline bool renderBufferFlush(const std::shared_ptr<devices::IDevice>& device, drivers::IAudioDriver& drv, const uint8_t track) { return renderBufferFlush(device->getHardware()->getAudioStream().get(), drv, track); };
 
 protected:
-    std::shared_ptr<IMixer>         m_mixer;
     std::unique_ptr<files::WAVFile> m_out;
     std::vector<int16_t>            m_buf;
 };
