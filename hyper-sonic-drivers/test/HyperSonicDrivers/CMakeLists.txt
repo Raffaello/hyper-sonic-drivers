@@ -274,27 +274,15 @@ macro_test(
         "../fixtures/GENMIDI.OP2"
 )
 
-# if(USE_SDL3)
-    macro_test(
-        EXE TestRenderer
-        FILES "audio/TestRenderer.cpp"
-        LINKS_PRIVATE hyper-sonic-drivers-static
-        FIXTURES
-            "../fixtures/test_renderer_adlib_mame2.wav"
-            "../fixtures/test_renderer_sbpro2_dosbox.wav"
-            "../fixtures/DUNE0.ADL"
-    )
-# elseif(USE_SDL2)
-#     macro_test(
-#         EXE TestRenderer
-#         FILES "audio/sdl2/TestRenderer.cpp"
-#         LINKS_PRIVATE hyper-sonic-drivers-static
-#         FIXTURES
-#             "../fixtures/test_renderer_adlib_mame2.wav"
-#             "../fixtures/test_renderer_sbpro2_dosbox.wav"
-#             "../fixtures/DUNE0.ADL"
-#     )
-# endif()
+macro_test(
+    EXE TestRenderer
+    FILES "audio/TestRenderer.cpp"
+    LINKS_PRIVATE hyper-sonic-drivers-static
+    FIXTURES
+        "../fixtures/test_renderer_adlib_mame2.wav"
+        "../fixtures/test_renderer_sbpro2_dosbox.wav"
+        "../fixtures/DUNE0.ADL"
+)
 
 ##### future tests ###
 macro_test(
