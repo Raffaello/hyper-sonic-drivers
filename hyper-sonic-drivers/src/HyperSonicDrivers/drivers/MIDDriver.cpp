@@ -20,9 +20,6 @@ using utils::logI;
 using utils::logT;
 using utils::logW;
 
-constexpr uint32_t DEFAULT_MIDI_TEMPO = 500000;
-constexpr int32_t  CLOCK_HZ           = 10'000;
-
 MIDDriver::MIDDriver(
     const std::shared_ptr<devices::IDevice>& device,
     const audio::mixer::eChannelGroup        group,
@@ -149,42 +146,35 @@ void MIDDriver::play(const uint16_t track) noexcept
     if (!m_device->acquire(this))
         return;
 
-    m_division  = m_midi->division & 0x7FFF;
-    m_pEvents   = &m_midi->getTrack(track).getEvents();
-    m_pos       = 0;
-    m_paused    = false;
-    m_isPlaying = true;
-    setTempo(DEFAULT_MIDI_TEMPO);    // 120 BPM;
-    hardware::TimerCallBack cb = std::bind_front(&MIDDriver::onCallback_, this);
-    m_midiDriver->setCallback(cb, CLOCK_HZ);
+    m_midiDriver->play(m_midi->getTrack(track).getEvents(), m_midi->division);
 }
 
 void MIDDriver::stop() noexcept
 {
-    m_paused    = false;
-    m_isPlaying = false;
+    if (m_midiDriver != nullptr)
+        m_midiDriver->stop();
 }
 
 void MIDDriver::pause() noexcept
 {
-    if (m_isPlaying)
-        m_paused = true;
+    if (m_midiDriver != nullptr)
+        m_midiDriver->pause();
 }
 
 void MIDDriver::resume() noexcept
 {
-    if (m_isPlaying)
-        m_paused = false;
+    if (m_midiDriver != nullptr)
+        m_midiDriver->resume();
 }
 
 bool MIDDriver::isPlaying() const noexcept
 {
-    return m_isPlaying;
+    return m_midiDriver != nullptr ? m_midiDriver->isPlaying() : false;
 }
 
 bool MIDDriver::isPaused() const noexcept
 {
-    return m_paused;
+    return m_midiDriver != nullptr ? m_midiDriver->isPaused() : false;
 }
 
 bool MIDDriver::open_() noexcept
@@ -196,179 +186,6 @@ bool MIDDriver::open_() noexcept
     }
 
     return true;
-}
-
-void MIDDriver::onCallback_()
-{
-    using audio::midi::MIDI_EVENT_TYPES_HIGH;
-    using audio::midi::MIDI_META_EVENT;
-    using audio::midi::MIDI_META_EVENT_TYPES_LOW;
-    using audio::midi::MIDI_META_EVENT_VAL;
-    using audio::midi::TO_HIGH;
-    using audio::midi::TO_META;
-    using audio::midi::TO_META_LOW;
-
-    if (!m_isPlaying || m_pEvents == nullptr)
-        return;
-
-    if (m_paused)
-        return;
-
-    if (m_delta_micro >= 1'000'000 / CLOCK_HZ)
-    {
-        m_delta_micro -= 1'000'000 / CLOCK_HZ;
-        return;
-    }
-
-    if (m_pEvent != nullptr)
-    {
-        m_midiDriver->send(*m_pEvent);
-        m_pEvent = nullptr;
-        ++m_pos;
-        return;
-    }
-
-    if (m_pos >= m_pEvents->size())
-    {
-        m_isPlaying = false;
-        return;
-    }
-
-    const auto& e = (*m_pEvents)[m_pos];
-    switch (TO_HIGH(e.type._.high))
-    {
-    case MIDI_EVENT_TYPES_HIGH::META_SYSEX:
-    {
-        switch (TO_META_LOW(e.type._.low))
-        {
-        case MIDI_META_EVENT_TYPES_LOW::META:
-        {
-            const uint8_t type = e.data[0];    // must be < 128
-            std::string   str;
-            switch (TO_META(type))
-            {
-            case MIDI_META_EVENT::CHANNEL_PREFIX:
-                logW(std::format("CHANNEL_PREFIX {:d} not implemented", e.data[1]));
-                break;
-            case MIDI_META_EVENT::COPYRIGHT:
-                str = utils::chars_vector_to_string_skip_first(e.data);
-                logT(std::format("CopyRight: {}", str));
-                break;
-            case MIDI_META_EVENT::CUE_POINT:
-                str = utils::chars_vector_to_string_skip_first(e.data);
-                logD(std::format("Cue Point: {}", str));
-                break;
-            case MIDI_META_EVENT::DEVICE_NAME:
-                str = utils::chars_vector_to_string_skip_first(e.data);
-                logW(std::format("[Not Implemented] Device Name: {}", str));
-                break;
-            case MIDI_META_EVENT::END_OF_TRACK:
-                logD("MIDI end of track.");
-                m_isPlaying = false;
-                break;
-            case MIDI_META_EVENT::INSTRUMENT_NAME:
-                str = utils::chars_vector_to_string_skip_first(e.data);
-                logT(std::format("Instrument name: {}", str));
-                break;
-            case MIDI_META_EVENT::KEY_SIGNATURE:
-                logT(std::format("KEY_SIGNATURE: {:d} {:d}", e.data[1], e.data[2]));
-                break;
-            case MIDI_META_EVENT::LYRICS:
-                str = utils::chars_vector_to_string_skip_first(e.data);
-                logT(std::format("Lyrics: {}", str));
-                break;
-            case MIDI_META_EVENT::MARKER:
-                str = utils::chars_vector_to_string_skip_first(e.data);
-                logT(std::format("Marker: {}", str));
-                break;
-            case MIDI_META_EVENT::MIDI_PORT:
-                logW(std::format("MIDI_PORT {:d} not implemented", e.data[1]));
-                break;
-            case MIDI_META_EVENT::PROGRAM_NAME:
-                str = utils::chars_vector_to_string_skip_first(e.data);
-                logT(std::format("PROGRAM_NAME: {}", str));
-                break;
-            case MIDI_META_EVENT::SEQUENCER_SPECIFIC:
-                logW("SEQUENCE_SPECIFIC not implemented");
-                break;
-            case MIDI_META_EVENT::SEQUENCE_NAME:    // a.k.a track name
-                str = utils::chars_vector_to_string(++(e.data.begin()), e.data.end());
-                logT(std::format("SEQUENCE NAME: {}", str));
-                break;
-            case MIDI_META_EVENT::SEQUENCE_NUMBER:
-                logW("Sequence number not implemented");
-                break;
-            case MIDI_META_EVENT::SET_TEMPO:
-            {
-                setTempo((e.data[1] << 16) + (e.data[2] << 8) + (e.data[3]));
-                logT(std::format("Tempo {}, ({} bpm) -- microseconds/tick {}", m_tempo.load(), 60000000 / m_tempo.load(), m_delta_step));
-                break;
-            }
-            case MIDI_META_EVENT::SMPTE_OFFSET:
-                logW("SMPTE_OFFSET not implemented");
-                break;
-            case MIDI_META_EVENT::TEXT:
-                str = utils::chars_vector_to_string(++(e.data.begin()), e.data.end());
-                logT(std::format("Text: {}", str));
-                break;
-            case MIDI_META_EVENT::TIME_SIGNATURE:
-                logT(std::format("TIME_SIGNATURE: {:d}/{:d} - clocks {:d} - bb {:d} ", e.data[1], utils::powerOf2(e.data[2]), e.data[3], e.data[4]));
-                break;
-            default:
-                logW(std::format("MIDI_META_EVENT_TYPES_LOW not implemented/recognized: {:#02x}", type));
-                break;
-            }
-            ++m_pos;
-            return;    // META event processed, go on next MIDI event
-        }
-        case MIDI_META_EVENT_TYPES_LOW::SYS_EX0:
-            logD("SYS_EX0 META event");
-            // TODO: it should be sent as normal event?
-            // (it is processed as a normal event now in IMidiDriver)
-            m_midiDriver->send(e);
-            ++m_pos;
-            return;
-        case MIDI_META_EVENT_TYPES_LOW::SYS_EX7:
-            logD("SYS_EX7 META event");
-            // TODO: it should be sent as normal event?
-            m_midiDriver->send(e);
-            ++m_pos;
-            return;
-        default:
-            logW(std::format("MIDI_META_EVENT_TYPES_LOW not implemented/recognized: {:#02x}", e.type._.low));
-            break;
-        }
-    }
-    break;
-
-    case MIDI_EVENT_TYPES_HIGH::NOTE_OFF:
-        [[fallthrough]];
-    case MIDI_EVENT_TYPES_HIGH::NOTE_ON:
-        [[fallthrough]];
-    case MIDI_EVENT_TYPES_HIGH::AFTERTOUCH:
-        [[fallthrough]];
-    case MIDI_EVENT_TYPES_HIGH::CONTROLLER:
-        [[fallthrough]];
-    case MIDI_EVENT_TYPES_HIGH::PITCH_BEND:
-        [[fallthrough]];
-    case MIDI_EVENT_TYPES_HIGH::PROGRAM_CHANGE:
-        [[fallthrough]];
-    case MIDI_EVENT_TYPES_HIGH::CHANNEL_AFTERTOUCH:
-        break;
-    default:
-        logW(std::format("unrecognized MIDI EVENT type high {:#02x}", e.type._.high));
-        break;
-    }
-
-    if (e.delta_time != 0)
-    {
-        m_delta_micro = e.delta_time * m_delta_step;
-        m_pEvent      = &e;
-        return;
-    }
-
-    m_midiDriver->send(e);
-    ++m_pos;
 }
 
 }    // namespace HyperSonicDrivers::drivers

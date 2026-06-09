@@ -58,16 +58,14 @@ bool OplDriver::open(const audio::mixer::eChannelGroup group,
         return false;
     }
 
-    // TODO: these must be moved into IMidiDriver, andmake virtual onOpen protected method
-    m_group  = group;
-    m_volume = volume;
-    m_pan    = pan;
-
     // TODO: here the acquire should be done.
 
-    hardware::TimerCallBack cb = std::bind_front(&OplDriver::onCallback, this);
-    setCallback(cb, hardware::opl::default_opl_callback_freq);
-    return true;
+    hardware::TimerCallBack cb = std::bind_front(&OplDriver::callback_, this);
+    auto                    p  = std::make_shared<hardware::TimerCallBack>(cb);
+    m_opl->start(p, group, volume, pan, OplDriver::CLOCK_HZ);
+    m_isOpen = true;
+
+    return isOpen();
 }
 
 void OplDriver::close()
@@ -81,11 +79,11 @@ void OplDriver::close()
     // TODO: here the release should be done.
 }
 
-void OplDriver::onCallback() noexcept
-{
-}
+// void OplDriver::onCallback() noexcept
+// {
+// }
 
-void OplDriver::pause() const noexcept
+void OplDriver::onPause() noexcept
 {
     for (auto it = m_voicesInUseIndex.begin(); it != m_voicesInUseIndex.end(); ++it)
     {
@@ -96,20 +94,13 @@ void OplDriver::pause() const noexcept
     }
 }
 
-void OplDriver::resume() const noexcept
+void OplDriver::onResume() noexcept
 {
     for (auto it = m_voicesInUseIndex.begin(); it != m_voicesInUseIndex.end(); ++it)
     {
         const uint8_t i = *it;
         m_voices[i]->resume();
     }
-}
-
-void OplDriver::setCallback(const hardware::TimerCallBack& callback, int timerFrequency)
-{
-    auto p = std::make_shared<hardware::TimerCallBack>(callback);
-    m_opl->start(p, m_group, m_volume, m_pan, timerFrequency);
-    m_isOpen = true;
 }
 
 void OplDriver::noteOff(const uint8_t chan, const uint8_t note) noexcept

@@ -31,11 +31,6 @@ public:
               const uint8_t                     pan) override;
     void close() override;
 
-    void pause() const noexcept override { /*TODO*/ };
-    void resume() const noexcept override { /*TODO*/ };
-
-    void setCallback(const hardware::TimerCallBack& callback, int timerFrequency) override;
-
     uint32_t property(int prop, uint32_t param) override;
     // uint32_t getBaseTempo() override { return 1000000 / hardware::opl::default_opl_callback_freq; }
 
@@ -45,7 +40,9 @@ public:
     // virtual void setTimerCallback(void* timerParam, /*Common::TimerManager::TimerProc*/ void* timerProc);
 
 protected:
-    void onCallback() noexcept override;
+    // void onCallback() noexcept override;
+    void onPause() noexcept override { /*TODO*/ };
+    void onResume() noexcept override { /*TODO*/ };
 
     // MIDI Events
     void noteOff(const uint8_t chan, const uint8_t note) noexcept override;

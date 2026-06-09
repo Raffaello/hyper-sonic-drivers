@@ -97,8 +97,6 @@ bool MidiDriver_ADLIB::open(
     if (m_isOpen)
         return true;
 
-    m_isOpen = true;
-
     for (size_t i = 0; i != m_voices.size(); i++)
     {
         AdLibVoice* voice = &m_voices[i];
@@ -124,12 +122,10 @@ bool MidiDriver_ADLIB::open(
         adlibWriteSecondary(5, 1);
     }
 
-    m_group  = group;
-    m_volume = volume;
-    m_pan    = pan;
-
-    hardware::TimerCallBack cb = std::bind_front(&MidiDriver_ADLIB::onCallback, this);
-    setCallback(cb, hardware::opl::default_opl_callback_freq);
+    hardware::TimerCallBack cb = std::bind_front(&MidiDriver_ADLIB::callback_, this);
+    auto                    p  = std::make_shared<hardware::TimerCallBack>(cb);
+    m_opl->start(p, group, volume, pan, MidiDriver_ADLIB::CLOCK_HZ);
+    m_isOpen = true;
 
     return true;
 }
@@ -151,12 +147,6 @@ void MidiDriver_ADLIB::close()
 
     free(_regCache);
     free(_regCacheSecondary);
-}
-
-void MidiDriver_ADLIB::setCallback(const hardware::TimerCallBack& callback, int timerFrequency)
-{
-    auto p = std::make_shared<hardware::TimerCallBack>(callback);
-    m_opl->start(p, m_group, m_volume, m_pan, timerFrequency);
 }
 
 uint32_t MidiDriver_ADLIB::property(int prop, uint32_t param)
@@ -254,42 +244,42 @@ void MidiDriver_ADLIB::adlibWriteSecondary(uint8_t reg, uint8_t value)
     m_opl->writeReg(reg | 0x100, value);
 }
 
-void MidiDriver_ADLIB::onCallback() noexcept
-{
-    // TODO: here has to call the midi parser/player to send the next event(s)
-    // if (_adlibTimerProc)
-    //    (*_adlibTimerProc)(_adlibTimerParam);
+// void MidiDriver_ADLIB::onCallback() noexcept
+// {
+//     // TODO: here has to call the midi parser/player to send the next event(s)
+//     // if (_adlibTimerProc)
+//     //    (*_adlibTimerProc)(_adlibTimerParam);
 
-    _timerCounter += _timerIncrease;
-    while (_timerCounter >= _timerThreshold)
-    {
-        _timerCounter -= _timerThreshold;
-        // Sam&Max's OPL3 driver does not have any timer handling like this.
-        if (m_opl3Mode)
-            continue;
+// _timerCounter += _timerIncrease;
+// while (_timerCounter >= _timerThreshold)
+// {
+//     _timerCounter -= _timerThreshold;
+//     // Sam&Max's OPL3 driver does not have any timer handling like this.
+//     if (m_opl3Mode)
+//         continue;
 
-        for (auto& voice : m_voices)
-        {
-            if (voice.isFree())
-                continue;
+// for (auto& voice : m_voices)
+// {
+//     if (voice.isFree())
+//         continue;
 
-            if (voice.duration && (voice.duration -= 0x11) <= 0)
-            {
-                mcOff(&voice);
-                return;
-            }
+// if (voice.duration && (voice.duration -= 0x11) <= 0)
+// {
+//     mcOff(&voice);
+//     return;
+// }
 
-            if (voice._s10a.active)
-            {
-                mcIncStuff(&voice, &voice._s10a, &voice._s11a);
-            }
-            if (voice._s10b.active)
-            {
-                mcIncStuff(&voice, &voice._s10b, &voice._s11b);
-            }
-        }
-    }
-}
+// if (voice._s10a.active)
+// {
+//     mcIncStuff(&voice, &voice._s10a, &voice._s11a);
+// }
+// if (voice._s10b.active)
+// {
+//     mcIncStuff(&voice, &voice._s10b, &voice._s11b);
+// }
+// }
+// }
+// }
 
 void MidiDriver_ADLIB::noteOff(const uint8_t chan, const uint8_t note) noexcept
 {
