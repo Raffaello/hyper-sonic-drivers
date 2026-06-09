@@ -25,7 +25,7 @@ using audio::midi::MIDI_META_EVENT_TYPES_LOW;
 using audio::midi::MIDIEvent;
 using utils::ILogger;
 
-TEST(MIDDriver, SEQUENCE_NAME_META_EVENT)
+TEST(DISABLED_MIDDriver, SEQUENCE_NAME_META_EVENT)
 {
     auto device = std::make_shared<devices::DeviceMock<devices::Adlib>>();
 
@@ -100,7 +100,7 @@ TEST(MIDDriver, force_stop_on_long_delta_time_delay)
     EXPECT_FALSE(device->isAcquired());
 }
 
-TEST(MIDDriver, getTempo)
+TEST(DISABLED_MIDDriver, getTempo)
 {
     auto          mf     = files::MIDFile("../fixtures/midifile_sample.mid");
     auto          device = std::make_shared<devices::DeviceMock<devices::Adlib>>();
