@@ -58,6 +58,7 @@ bool OplDriver::open(const audio::mixer::eChannelGroup group,
         return false;
     }
 
+    // TODO: these must be moved into IMidiDriver, andmake virtual onOpen protected method
     m_group  = group;
     m_volume = volume;
     m_pan    = pan;

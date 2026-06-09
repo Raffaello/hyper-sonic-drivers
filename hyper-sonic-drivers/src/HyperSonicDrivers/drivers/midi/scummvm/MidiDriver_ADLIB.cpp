@@ -86,7 +86,7 @@ MidiDriver_ADLIB::MidiDriver_ADLIB(const std::shared_ptr<devices::Opl>& opl)
 MidiDriver_ADLIB::~MidiDriver_ADLIB()
 {
     if (m_isOpen)
-        MidiDriver_ADLIB::close();
+        close();
 }
 
 bool MidiDriver_ADLIB::open(
