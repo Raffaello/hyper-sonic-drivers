@@ -58,13 +58,14 @@ bool OplDriver::open(const audio::mixer::eChannelGroup group,
         return false;
     }
 
+    m_group  = group;
+    m_volume = volume;
+    m_pan    = pan;
+
     // TODO: here the acquire should be done.
 
     hardware::TimerCallBack cb = std::bind_front(&OplDriver::onCallback, this);
-    auto                    p  = std::make_shared<hardware::TimerCallBack>(cb);
-    m_opl->start(p, group, volume, pan);
-
-    m_isOpen = true;
+    setCallback(cb, hardware::opl::default_opl_callback_freq);
     return true;
 }
 
@@ -89,10 +90,12 @@ void OplDriver::onCallback() noexcept
     //       enqueued in send method
     //  if queue empty do nothing
     // must keep track of the last time it was called
-    // and update is internal timer with the midievent delta.
+    // and update is internal timer with the midi-event delta.
 
-    // NOTE changing this onTimer will effect the currnet MIDDriver using a thread.
+    // NOTE changing this onTimer will effect the current MIDDriver using a thread.
     //      but the same logic of the thread will be performed here.
+
+    [[maybe_unused]] int i = 0;
 }
 
 void OplDriver::pause() const noexcept
@@ -113,6 +116,13 @@ void OplDriver::resume() const noexcept
         const uint8_t i = *it;
         m_voices[i]->resume();
     }
+}
+
+void OplDriver::setCallback(hardware::TimerCallBack callback, int timerFrequency)
+{
+    auto p = std::make_shared<hardware::TimerCallBack>(callback);
+    m_opl->start(p, m_group, m_volume, m_pan, timerFrequency);
+    m_isOpen = true;
 }
 
 void OplDriver::noteOff(const uint8_t chan, const uint8_t note) noexcept

@@ -23,6 +23,7 @@ public:
 
     void pause() const noexcept override { /*TODO*/ };
     void resume() const noexcept override { /*TODO*/ };
+    void setCallback(hardware::TimerCallBack callback, int timerFrequency) override { /*TODO*/ };
 
 protected:
     void onCallback() noexcept override;

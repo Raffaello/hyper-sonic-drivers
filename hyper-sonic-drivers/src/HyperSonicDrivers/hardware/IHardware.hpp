@@ -57,13 +57,13 @@ public:
     inline uint32_t getOutputRate() const noexcept { return m_output_rate; };
 
 protected:
-    virtual void startCallbacks(
+    virtual void startCallback(
         const audio::mixer::eChannelGroup group,
         const uint8_t                     volume,
         const uint8_t                     pan,
         const int                         timerFrequency) = 0;
 
-    void stopCallbacks();
+    void stopCallback();
     void callCallback();
 
     /**

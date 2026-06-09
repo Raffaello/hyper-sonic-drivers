@@ -123,9 +123,12 @@ bool MidiDriver_ADLIB::open(
         adlibWriteSecondary(5, 1);
     }
 
+    m_group  = group;
+    m_volume = volume;
+    m_pan    = pan;
+
     hardware::TimerCallBack cb = std::bind_front(&MidiDriver_ADLIB::onCallback, this);
-    auto                    p  = std::make_shared<hardware::TimerCallBack>(cb);
-    m_opl->start(p, group, volume, pan);
+    setCallback(cb, hardware::opl::default_opl_callback_freq);
 
     return true;
 }
@@ -147,6 +150,12 @@ void MidiDriver_ADLIB::close()
 
     free(_regCache);
     free(_regCacheSecondary);
+}
+
+void MidiDriver_ADLIB::setCallback(hardware::TimerCallBack callback, int timerFrequency)
+{
+    auto p = std::make_shared<hardware::TimerCallBack>(callback);
+    m_opl->start(p, m_group, m_volume, m_pan, timerFrequency);
 }
 
 uint32_t MidiDriver_ADLIB::property(int prop, uint32_t param)

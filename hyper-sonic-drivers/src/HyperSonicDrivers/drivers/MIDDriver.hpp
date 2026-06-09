@@ -21,7 +21,6 @@ namespace HyperSonicDrivers::drivers
 class MIDDriver : public IAudioDriver
 {
 public:
-    [[deprecated("it will be replaced by another class without thread")]]
     explicit MIDDriver(
         const std::shared_ptr<devices::IDevice>& device,
         const audio::mixer::eChannelGroup        group,
@@ -67,8 +66,6 @@ public:
     }
 
 protected:
-    void processTrack(const audio::midi::MIDITrack& track, const uint16_t division);
-
     // TODO: can be later on moved to public, but not sure the tempoChanged event
     //       would be better using SDL2 custom event
     //       or a event queue sub-system instead of doing this with a simple boolean
@@ -80,6 +77,8 @@ protected:
 
     bool open_() noexcept;
 
+    void onCallback_();
+
 private:
     // this is to abstract the specific midi driver implementation
     std::unique_ptr<drivers::midi::IMidiDriver> m_midiDriver;
@@ -88,12 +87,17 @@ private:
     const uint8_t                               m_volume;
     const uint8_t                               m_pan;
 
-    std::jthread m_player;
-
     std::atomic<bool>     m_isPlaying        = false;
-    std::atomic<bool>     m_force_stop       = false;
     std::atomic<bool>     m_paused           = false;
     std::atomic<bool>     m_midiTempoChanged = false;
-    std::atomic<uint32_t> m_tempo            = 0;
+    std::atomic<uint32_t> m_tempo            = 0;    // TODO: not used
+    std::atomic<uint32_t> m_pos              = 0;
+
+    uint16_t m_delta_step  = 0;
+    uint32_t m_delta_micro = 0;
+
+    const std::vector<audio::midi::MIDIEvent>* m_pEvents  = nullptr;
+    const audio::midi::MIDIEvent*              m_pEvent   = nullptr;
+    uint16_t                                   m_division = 0;    // TODO not required.
 };
 }    // namespace HyperSonicDrivers::drivers

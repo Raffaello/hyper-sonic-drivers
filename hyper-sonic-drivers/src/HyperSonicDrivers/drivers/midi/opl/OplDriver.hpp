@@ -39,6 +39,8 @@ public:
     void pause() const noexcept override;
     void resume() const noexcept override;
 
+    void setCallback(hardware::TimerCallBack callback, int timerFrequency) override;
+
     inline std::shared_ptr<hardware::opl::OPL> getOpl() const noexcept { return m_opl; };
 
 protected:
