@@ -24,7 +24,7 @@ constexpr int MaxRendererFlushIterations = 1000;
 
 Renderer::Renderer(const uint32_t freq, const uint16_t buffer_size, const uint8_t max_channels)
 {
-    m_mixer = make_mixer<MIXER>(max_channels, freq, buffer_size);
+    m_buffer_size = buffer_size;
 }
 
 void Renderer::openOutputFile(const std::filesystem::path& path)
@@ -43,7 +43,7 @@ void Renderer::renderBuffer(IAudioStream* stream)
     if (m_buf.empty())
     {
         m_out->save_prepare(stream->getRate(), stream->isStereo());
-        m_buf.resize(m_mixer->buffer_size);
+        m_buf.resize(m_buffer_size);
     }
 
     const size_t read = stream->readBuffer(m_buf.data(), m_buf.size());
@@ -56,7 +56,7 @@ bool Renderer::renderFlush(IAudioStream* stream)
     if (m_buf.empty())
     {
         m_out->save_prepare(stream->getRate(), stream->isStereo());
-        m_buf.resize(m_mixer->buffer_size);
+        m_buf.resize(m_buffer_size);
     }
 
     for (int i = 0; i < MaxRendererFlushIterations; i++)
