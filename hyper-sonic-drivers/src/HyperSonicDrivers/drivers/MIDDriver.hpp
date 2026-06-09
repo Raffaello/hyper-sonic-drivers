@@ -73,6 +73,7 @@ protected:
     {
         m_midiTempoChanged = true;
         m_tempo            = tempo;
+        m_delta_step       = static_cast<uint32_t>(static_cast<float>(m_tempo) / static_cast<float>(m_division));
     }
 
     bool open_() noexcept;

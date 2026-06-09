@@ -23,17 +23,6 @@ using utils::logW;
 constexpr uint32_t DEFAULT_MIDI_TEMPO = 500000;
 constexpr int32_t  CLOCK_HZ           = 10'000;
 
-constexpr uint32_t tempo_to_micros(const uint32_t tempo, const uint16_t division)
-{
-    // TODO: it can be integer division? test it.
-    return static_cast<uint32_t>(static_cast<float>(tempo) / static_cast<float>(division));
-}
-
-inline uint32_t get_start_time()
-{
-    return utils::getMicro<uint32_t>();
-}
-
 MIDDriver::MIDDriver(
     const std::shared_ptr<devices::IDevice>& device,
     const audio::mixer::eChannelGroup        group,
@@ -165,10 +154,9 @@ void MIDDriver::play(const uint16_t track) noexcept
     m_pos       = 0;
     m_paused    = false;
     m_isPlaying = true;
-    // setTempo(DEFAULT_MIDI_TEMPO);    // 120 BPM;
+    setTempo(DEFAULT_MIDI_TEMPO);    // 120 BPM;
     hardware::TimerCallBack cb = std::bind_front(&MIDDriver::onCallback_, this);
-    m_midiDriver->setCallback(cb, CLOCK_HZ);    // 1Khz
-    m_delta_step = CLOCK_HZ / 2;                // 1Khz / 2Hz ratio (2Hz=120 BPM)
+    m_midiDriver->setCallback(cb, CLOCK_HZ);
 }
 
 void MIDDriver::stop() noexcept
@@ -312,9 +300,7 @@ void MIDDriver::onCallback_()
             case MIDI_META_EVENT::SET_TEMPO:
             {
                 setTempo((e.data[1] << 16) + (e.data[2] << 8) + (e.data[3]));
-                const auto tempo_micros = tempo_to_micros(m_tempo, m_division);
-                m_delta_step            = tempo_micros;
-                logT(std::format("Tempo {}, ({} bpm) -- microseconds/tick {}", m_tempo.load(), 60000000 / m_tempo.load(), tempo_micros));
+                logT(std::format("Tempo {}, ({} bpm) -- microseconds/tick {}", m_tempo.load(), 60000000 / m_tempo.load(), m_delta_step));
                 break;
             }
             case MIDI_META_EVENT::SMPTE_OFFSET:
