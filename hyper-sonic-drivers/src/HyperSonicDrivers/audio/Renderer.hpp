@@ -10,7 +10,7 @@ namespace HyperSonicDrivers::audio
 class Renderer : public IRenderer
 {
 public:
-    Renderer(const uint16_t buffer_size);
+    explicit Renderer(const uint16_t buffer_size);
     ~Renderer() override = default;
 
     void openOutputFile(const std::filesystem::path& path) override;
