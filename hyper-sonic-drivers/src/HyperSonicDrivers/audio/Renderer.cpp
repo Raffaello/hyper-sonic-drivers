@@ -5,7 +5,7 @@
 #include <HyperSonicDrivers/audio/sdl3/Mixer.hpp>
 #define MIXER sdl3::Mixer
 #elif HAS_SDL2
-#include <HyperSonicDrivers/audio/sdl3/Mixer.hpp>
+#include <HyperSonicDrivers/audio/sdl2/Mixer.hpp>
 #define MIXER sdl2::Mixer
 #else
 #include <HyperSonicDrivers/audio/rtaudio/Mixer.hpp>
