@@ -54,7 +54,7 @@ TEST_P(RendererTest, render_wav)
 
     ASSERT_FALSE(std::filesystem::exists(rfile));
     {
-        Renderer r(freq, 1024);
+        Renderer r(1024);
         r.openOutputFile(rfile);
 
         auto drv1 = drivers::westwood::ADLDriver(opl, eChannelGroup::Music);
@@ -95,7 +95,7 @@ TEST_P(RendererTest, render_wav2)
 
     ASSERT_FALSE(std::filesystem::exists(rfile));
     {
-        Renderer r(freq, 1024);
+        Renderer r(1024);
         r.openOutputFile(rfile);
 
         auto drv1 = drivers::westwood::ADLDriver(opl, eChannelGroup::Music);

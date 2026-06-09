@@ -45,6 +45,5 @@ public:
 protected:
     std::unique_ptr<files::WAVFile> m_out;
     std::vector<int16_t>            m_buf;
-    uint16_t                        m_buffer_size;
 };
 }    // namespace HyperSonicDrivers::audio
