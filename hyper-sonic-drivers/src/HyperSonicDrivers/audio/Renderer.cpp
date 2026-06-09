@@ -1,10 +1,22 @@
-#include <HyperSonicDrivers/audio/sdl3/Renderer.hpp>
+#include <HyperSonicDrivers/audio/Renderer.hpp>
+
+#if USE_SDL3
+
 #include <HyperSonicDrivers/audio/sdl3/Mixer.hpp>
+#define MIXER sdl3::Mixer
+#elif USE_SDL2
+#include <HyperSonicDrivers/audio/sdl3/Mixer.hpp>
+#define MIXER sdl2::Mixer
+#else
+#include <HyperSonicDrivers/audio/rtaudio/Mixer.hpp>
+#define MIXER rtaudio::Mixer
+#endif
+
 #include <HyperSonicDrivers/utils/ILogger.hpp>
 #include <algorithm>
 #include <ranges>
 
-namespace HyperSonicDrivers::audio::sdl3
+namespace HyperSonicDrivers::audio
 {
 // MaxRendererFlushIterations defines the maximum number of iterations
 // to attempt flushing the renderer buffer to prevent infinite loops.
@@ -12,7 +24,7 @@ constexpr int MaxRendererFlushIterations = 1000;
 
 Renderer::Renderer(const uint32_t freq, const uint16_t buffer_size, const uint8_t max_channels)
 {
-    m_mixer = make_mixer<Mixer>(max_channels, freq, buffer_size);
+    m_mixer = make_mixer<MIXER>(max_channels, freq, buffer_size);
 }
 
 void Renderer::openOutputFile(const std::filesystem::path& path)
@@ -71,4 +83,4 @@ bool Renderer::renderBufferFlush(IAudioStream* stream, drivers::IAudioDriver& dr
 
     return renderFlush(stream);
 }
-}    // namespace HyperSonicDrivers::audio::sdl3
+}    // namespace HyperSonicDrivers::audio

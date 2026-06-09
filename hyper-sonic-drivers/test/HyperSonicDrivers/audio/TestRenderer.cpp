@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <HyperSonicDrivers/audio/sdl3/Renderer.hpp>
+#include <HyperSonicDrivers/audio/Renderer.hpp>
 #include <HyperSonicDrivers/devices/Adlib.hpp>
 #include <HyperSonicDrivers/devices/SbPro2.hpp>
 #include <HyperSonicDrivers/drivers/westwood/ADLDriver.hpp>
@@ -9,7 +9,7 @@
 #include <filesystem>
 #include <string>
 
-namespace HyperSonicDrivers::audio::sdl3
+namespace HyperSonicDrivers::audio
 {
 using audio::mixer::eChannelGroup;
 using hardware::opl::OplEmulator;
@@ -128,7 +128,7 @@ INSTANTIATE_TEST_SUITE_P(
     ::testing::Values(
         std::make_tuple<>("adlib_mame2", 44100, eDeviceName::Adlib, OplEmulator::MAME),
         std::make_tuple<>("sbpro2_dosbox", 44100, eDeviceName::SbPro2, OplEmulator::DOS_BOX)));
-}    // namespace HyperSonicDrivers::audio::sdl3
+}    // namespace HyperSonicDrivers::audio
 
 int main(int argc, char** argv)
 {
