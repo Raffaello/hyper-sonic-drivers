@@ -29,16 +29,17 @@
 #if HAS_SDL3
 #include <HyperSonicDrivers/audio/sdl3/Mixer.hpp>
 #include <HyperSonicDrivers/utils/sdl3/Logger.hpp>
-#include <HyperSonicDrivers/audio/sdl3/Renderer.hpp>
 #include <SDL3/SDL.h>
-
-#else if HAS_SDL2
+#elif HAS_SDL2
 #include <HyperSonicDrivers/audio/sdl2/Mixer.hpp>
 #include <HyperSonicDrivers/utils/sdl2/Logger.hpp>
-#include <HyperSonicDrivers/audio/sdl2/Renderer.hpp>
 #include <SDL2/SDL.h>
-
+#else
+#include <HyperSonicDrivers/audio/rtaudio/Mixer.hpp>
+#include <HyperSonicDrivers/utils/Logger.hpp>
 #endif
+
+#include <HyperSonicDrivers/audio/Renderer.hpp>
 
 #ifdef HAS_MT32_EMU
 #include <HyperSonicDrivers/hardware/mt32/MT32.hpp>

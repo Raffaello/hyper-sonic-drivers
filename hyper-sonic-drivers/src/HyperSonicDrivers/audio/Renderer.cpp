@@ -1,10 +1,10 @@
 #include <HyperSonicDrivers/audio/Renderer.hpp>
 
-#if USE_SDL3
+#if HAS_SDL3
 
 #include <HyperSonicDrivers/audio/sdl3/Mixer.hpp>
 #define MIXER sdl3::Mixer
-#elif USE_SDL2
+#elif HAS_SDL2
 #include <HyperSonicDrivers/audio/sdl3/Mixer.hpp>
 #define MIXER sdl2::Mixer
 #else
