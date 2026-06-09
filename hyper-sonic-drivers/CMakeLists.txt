@@ -150,10 +150,9 @@ target_sources(${LIB_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/HyperSonicDrivers/audio/mixer/Channel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/HyperSonicDrivers/audio/mixer/MixerBase.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/HyperSonicDrivers/audio/rtaudio/Mixer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/HyperSonicDrivers/audio/Renderer.cpp
     $<$<BOOL:${USE_SDL2}>:${CMAKE_CURRENT_SOURCE_DIR}/src/HyperSonicDrivers/audio/sdl2/Mixer.cpp>
-    $<$<BOOL:${USE_SDL2}>:${CMAKE_CURRENT_SOURCE_DIR}/src/HyperSonicDrivers/audio/sdl2/Renderer.cpp>
     $<$<BOOL:${USE_SDL3}>:${CMAKE_CURRENT_SOURCE_DIR}/src/HyperSonicDrivers/audio/sdl3/Mixer.cpp>
-    $<$<BOOL:${USE_SDL3}>:${CMAKE_CURRENT_SOURCE_DIR}/src/HyperSonicDrivers/audio/sdl3/Renderer.cpp>
     # --- #
     ${CMAKE_CURRENT_SOURCE_DIR}/src/HyperSonicDrivers/audio/MIDI.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/HyperSonicDrivers/audio/midi/MIDITrack.cpp
