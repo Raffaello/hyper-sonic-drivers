@@ -361,7 +361,6 @@ void MIDDriver::onCallback_()
 
     if (e.delta_time != 0)
     {
-        // m_delta_ticks = e.delta_time;
         m_delta_micro = e.delta_time * m_delta_step;
         m_pEvent      = &e;
         return;

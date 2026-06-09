@@ -3,9 +3,12 @@
 #include <HyperSonicDrivers/devices/Adlib.hpp>
 #include <HyperSonicDrivers/devices/SbPro2.hpp>
 #include <HyperSonicDrivers/drivers/westwood/ADLDriver.hpp>
+#include <HyperSonicDrivers/drivers/MIDDriver.hpp>
 #include <HyperSonicDrivers/audio/mixer/ChannelGroup.hpp>
 #include <HyperSonicDrivers/hardware/opl/OplEmulator.hpp>
 #include <HyperSonicDrivers/audio/IMixerMock.hpp>
+#include <HyperSonicDrivers/files/westwood/ADLFile.hpp>
+#include <HyperSonicDrivers/files/MIDFile.hpp>
 #include <filesystem>
 #include <string>
 
@@ -80,9 +83,7 @@ TEST_P(RendererTest, render_wav)
     EXPECT_EQ(sound->freq, freq);
     EXPECT_EQ(sound->stereo, opl->getHardware()->isStereo());
     for (uint32_t i = 0; i < sound->dataSize; i++)
-    {
         EXPECT_EQ(sound->data[i], exp_sound->data[i]);
-    }
 }
 
 TEST_P(RendererTest, render_wav2)
@@ -117,9 +118,42 @@ TEST_P(RendererTest, render_wav2)
     EXPECT_EQ(sound->freq, freq);
     EXPECT_EQ(sound->stereo, opl->getHardware()->isStereo());
     for (uint32_t i = 0; i < sound->dataSize; i++)
-    {
         EXPECT_EQ(sound->data[i], exp_sound->data[i]);
+}
+
+TEST_P(RendererTest, DISABLED_midi_render_wav3)
+{
+    const std::string exp_renderer = "../fixtures/test_renderer_" + test_name + ".wav";
+    const std::string rfile        = "../fixtures/test_renderer_" + test_name + "_out3.wav";
+
+    if (std::filesystem::exists(rfile))
+        std::filesystem::remove(rfile);
+
+    ASSERT_FALSE(std::filesystem::exists(rfile));
+    {
+        Renderer r(1024);
+        r.openOutputFile(rfile);
+
+        auto drv1 = drivers::MIDDriver(opl, eChannelGroup::Music);
+        auto mf   = std::make_shared<files::MIDFile>("../fixtures/MI_intro.mid");
+        drv1.setMidi(mf->getMIDI());
+
+        ASSERT_TRUE(r.renderBufferFlush(opl, drv1, 0));
+        r.closeOutputFile();
     }
+
+    files::WAVFile w(rfile);
+    auto           sound = w.getSound();
+    files::WAVFile wexp(exp_renderer);
+    auto           exp_sound = wexp.getSound();
+
+    ASSERT_EQ(sound->dataSize, exp_sound->dataSize);
+    ASSERT_EQ(sound->freq, exp_sound->freq);
+    ASSERT_EQ(sound->stereo, exp_sound->stereo);
+    EXPECT_EQ(sound->freq, freq);
+    EXPECT_EQ(sound->stereo, opl->getHardware()->isStereo());
+    for (uint32_t i = 0; i < sound->dataSize; i++)
+        EXPECT_EQ(sound->data[i], exp_sound->data[i]);
 }
 
 INSTANTIATE_TEST_SUITE_P(
