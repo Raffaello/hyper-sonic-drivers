@@ -63,7 +63,7 @@ protected:
 
     std::array<std::unique_ptr<IMidiChannel>, audio::midi::MIDI_MAX_CHANNELS> m_channels;
 
-    // virtual void onCallback() noexcept = 0;
+    // virtual void onCallback() noexcept = 0; // TODO: consider to re-do it
 
     // virtual void onOpen() = 0;
     virtual void onPause() noexcept  = 0;
@@ -79,6 +79,7 @@ protected:
     virtual void controller(const uint8_t chan, const audio::midi::MIDI_EVENT_CONTROLLER_TYPES ctrl_type, uint8_t value) noexcept;
     virtual void programChange(const uint8_t chan, const uint8_t program) noexcept;
     virtual void pitchBend(const uint8_t chan, const uint16_t bend) noexcept = 0;
+
     /**
      * Transmit a SysEx to the MIDI device.
      *
@@ -144,6 +145,7 @@ inline void IMidiDriver::stop() noexcept
 {
     m_paused    = false;
     m_isPlaying = false;
+    // TODO do virtual onStop to stop all the sounds
 }
 
 inline bool IMidiDriver::isTempoChanged() const noexcept

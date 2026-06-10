@@ -299,7 +299,8 @@ void MidiDriver_ADLIB::onResume() noexcept
         if (voice.isFree())
             continue;
 
-        adlibKeyOnOff(voice.slot);
+        const auto* part = toAdlibPart(voice.getChannel());
+        adlibNoteOnEx(voice.slot, voice.getNote(), part->pitch >> 1);    // ?
     }
 }
 
