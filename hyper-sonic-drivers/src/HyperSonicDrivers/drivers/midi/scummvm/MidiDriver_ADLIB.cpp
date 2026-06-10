@@ -85,8 +85,7 @@ MidiDriver_ADLIB::MidiDriver_ADLIB(const std::shared_ptr<devices::Opl>& opl)
 
 MidiDriver_ADLIB::~MidiDriver_ADLIB()
 {
-    if (m_isOpen)
-        close();
+    MidiDriver_ADLIB::close();
 }
 
 bool MidiDriver_ADLIB::open(
@@ -134,6 +133,7 @@ void MidiDriver_ADLIB::close()
 {
     if (!m_isOpen)
         return;
+
     m_isOpen = false;
 
     // Stop the OPL timer

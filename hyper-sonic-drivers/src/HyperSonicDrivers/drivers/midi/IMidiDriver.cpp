@@ -11,9 +11,6 @@ using utils::logW;
 using utils::logD;
 using utils::logT;
 
-constexpr uint32_t DEFAULT_MIDI_TEMPO = 500000;
-constexpr int32_t  CLOCK_HZ           = 10'000;
-
 void IMidiDriver::send(const audio::midi::MIDIEvent& e) noexcept
 {
     // TODO: sysEx must be reviewed if ok, probably should check

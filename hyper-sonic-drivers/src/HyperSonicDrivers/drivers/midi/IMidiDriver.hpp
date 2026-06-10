@@ -19,7 +19,8 @@ namespace HyperSonicDrivers::drivers::midi
 class IMidiDriver
 {
 public:
-    static constexpr int32_t CLOCK_HZ = 10'000;
+    static constexpr uint32_t DEFAULT_MIDI_TEMPO = 500000;
+    static constexpr int32_t  CLOCK_HZ           = 10'000;
 
     IMidiDriver()          = default;
     virtual ~IMidiDriver() = default;

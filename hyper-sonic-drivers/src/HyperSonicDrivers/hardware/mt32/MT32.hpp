@@ -15,17 +15,11 @@ namespace HyperSonicDrivers::devices
 class MT32;
 }
 
-// namespace HyperSonicDrivers::audio
-//{
-//     class IRenderer;
-// }
-
 namespace HyperSonicDrivers::hardware::mt32
 {
-constexpr int mt32_frequency_internal = 32000;    // 32 KHz
-constexpr int mt32_frequency          = 250;
-
-constexpr uint32_t mt32_sysex_addr_LCD = 0x80000;
+constexpr int      mt32_frequency_internal = 32000;    // 32 KHz
+constexpr int      mt32_frequency          = 250;
+constexpr uint32_t mt32_sysex_addr_LCD     = 0x80000;
 
 class MT32 : public IHardware
 {
