@@ -281,6 +281,28 @@ void MidiDriver_ADLIB::adlibWriteSecondary(uint8_t reg, uint8_t value)
 // }
 // }
 
+void MidiDriver_ADLIB::onPause() noexcept
+{
+    for (auto& voice : m_voices)
+    {
+        if (voice.isFree())
+            continue;
+
+        adlibKeyOff(voice.slot);
+    }
+}
+
+void MidiDriver_ADLIB::onResume() noexcept
+{
+    for (auto& voice : m_voices)
+    {
+        if (voice.isFree())
+            continue;
+
+        adlibKeyOnOff(voice.slot);
+    }
+}
+
 void MidiDriver_ADLIB::noteOff(const uint8_t chan, const uint8_t note) noexcept
 {
     auto    part  = getChannel(chan);

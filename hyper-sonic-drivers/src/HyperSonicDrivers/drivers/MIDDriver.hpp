@@ -51,15 +51,10 @@ public:
     void resume() noexcept;
 
     bool isPlaying() const noexcept override;
-
     bool isPaused() const noexcept;
 
-    inline bool isTempoChanged() const noexcept { return m_midiDriver != nullptr ? m_midiDriver->isTempoChanged() : false; }
-
-    inline uint32_t getTempo() const noexcept
-    {
-        return m_midiDriver != nullptr ? m_midiDriver->getTempo() : 0;
-    }
+    inline bool     isTempoChanged() const noexcept;
+    inline uint32_t getTempo() const noexcept;
 
 protected:
     bool open_() noexcept;
@@ -73,4 +68,15 @@ private:
     const uint8_t                     m_volume;
     const uint8_t                     m_pan;
 };
+
+inline bool MIDDriver::isTempoChanged() const noexcept
+{
+    return m_midiDriver != nullptr ? m_midiDriver->isTempoChanged() : false;
+}
+
+inline uint32_t MIDDriver::getTempo() const noexcept
+{
+    return m_midiDriver != nullptr ? m_midiDriver->getTempo() : 0;
+}
+
 }    // namespace HyperSonicDrivers::drivers

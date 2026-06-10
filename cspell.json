@@ -29,6 +29,7 @@
         "endmacro",
         "EOBSOUND",
         "EVNT",
+        "finetune",
         "FMOPL",
         "gcda",
         "gcno",

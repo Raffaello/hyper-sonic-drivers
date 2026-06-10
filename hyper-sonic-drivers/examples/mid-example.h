@@ -48,9 +48,21 @@ void mid_test_run(drivers::MIDDriver& midDrv, const std::shared_ptr<audio::MIDI>
     auto start_time = std::chrono::system_clock::now();
     midDrv.setMidi(midi);
     midDrv.play(0);
+    int i = 0;
     while (midDrv.isPlaying())
     {
         utils::delayMillis(1000);
+        i++;
+        if (i == 10)
+        {
+            spdlog::info("Pause 3s...");
+            midDrv.pause();
+        }
+        else if (i == 10 + 3)
+        {
+            spdlog::info("resuming");
+            midDrv.resume();
+        }
     }
 
     auto end_time = std::chrono::system_clock::now();

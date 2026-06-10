@@ -1,5 +1,4 @@
 #include <array>
-#include <thread>
 #include <format>
 #include <HyperSonicDrivers/drivers/MIDDriver.hpp>
 #include <HyperSonicDrivers/utils/algorithms.hpp>
@@ -105,7 +104,7 @@ bool MIDDriver::resetBankOP2() noexcept
 
 void MIDDriver::play(const uint16_t track) noexcept
 {
-    if (m_midi == nullptr)
+    if (m_midi == nullptr || m_midiDriver == nullptr)
         return;
 
     if (track >= m_midi->numTracks)

@@ -8,6 +8,7 @@
 #include <HyperSonicDrivers/drivers/midi/IMidiChannel.hpp>
 #include <HyperSonicDrivers/audio/midi/types.hpp>
 #include <HyperSonicDrivers/hardware/IHardware.hpp>
+#include <HyperSonicDrivers/utils/ILogger.hpp>
 
 namespace HyperSonicDrivers::drivers::midi
 {
@@ -30,44 +31,19 @@ public:
                       const uint8_t                     pan) = 0;
     virtual void close()                                     = 0;
 
-    inline bool isOpen() const noexcept { return m_isOpen; }
-
     virtual void send(const audio::midi::MIDIEvent& e) noexcept;
     virtual void send(const int8_t channel, const uint32_t msg) noexcept;
     virtual void send(const uint32_t msg) noexcept;
     virtual void send(const audio::midi::MIDI_EVENT_TYPES_HIGH type, const uint8_t channel, const uint8_t data1, const uint8_t data2);
 
-    inline void pause() noexcept
-    {
-        if (m_isPlaying)
-        {
-            m_paused = true;
-            onPause();
-        }
-    };
-
-    inline void resume() noexcept
-    {
-        if (m_isPlaying)
-        {
-            m_paused = false;
-            onResume();
-        }
-    };
-
-    inline bool isPlaying() const noexcept { return m_isPlaying; }
-
-    inline bool isPaused() const noexcept { return isPlaying() && m_paused; }
-
-    inline void stop() noexcept
-    {
-        m_paused    = false;
-        m_isPlaying = false;
-    }
-
-    inline bool isTempoChanged() const noexcept { return m_midiTempoChanged; }
-
-    inline uint32_t getTempo() const noexcept { return m_tempo; }
+    inline bool     isOpen() const noexcept;
+    inline void     pause() noexcept;
+    inline void     resume() noexcept;
+    inline bool     isPlaying() const noexcept;
+    inline bool     isPaused() const noexcept;
+    inline void     stop() noexcept;
+    inline bool     isTempoChanged() const noexcept;
+    inline uint32_t getTempo() noexcept;
 
     void play(const std::vector<audio::midi::MIDIEvent>& events, uint16_t division);
 
@@ -95,12 +71,7 @@ protected:
 
     void callback_();
 
-    inline void setTempo(const uint32_t tempo) noexcept
-    {
-        m_midiTempoChanged = true;
-        m_tempo            = tempo;
-        m_delta_step       = static_cast<uint16_t>(static_cast<float>(m_tempo) / static_cast<float>(m_division));
-    }
+    inline void setTempo(const uint32_t tempo) noexcept;
 
     // MIDI events
     virtual void noteOff(const uint8_t chan, const uint8_t note) noexcept                   = 0;
@@ -135,4 +106,68 @@ protected:
     // virtual void detune(uint8_t value) noexcept = 0; //{ controlChange(17, value); }
     // virtual void priority(uint8_t value) noexcept = 0; //{ }
 };
+
+inline bool IMidiDriver::isOpen() const noexcept
+{
+    return m_isOpen;
+}
+
+inline void IMidiDriver::pause() noexcept
+{
+    if (m_isPlaying)
+    {
+        m_paused = true;
+        onPause();
+    }
+};
+
+inline void IMidiDriver::resume() noexcept
+{
+    if (m_isPlaying)
+    {
+        m_paused = false;
+        onResume();
+    }
+};
+
+inline bool IMidiDriver::isPlaying() const noexcept
+{
+    return m_isPlaying;
+}
+
+inline bool IMidiDriver::isPaused() const noexcept
+{
+    return isPlaying() && m_paused;
+}
+
+inline void IMidiDriver::stop() noexcept
+{
+    m_paused    = false;
+    m_isPlaying = false;
+}
+
+inline bool IMidiDriver::isTempoChanged() const noexcept
+{
+    return m_midiTempoChanged;
+}
+
+inline uint32_t IMidiDriver::getTempo() noexcept
+{
+    m_midiTempoChanged = false;
+    return m_tempo;
+}
+
+inline void IMidiDriver::setTempo(const uint32_t tempo) noexcept
+{
+    m_midiTempoChanged = true;
+    m_tempo            = tempo;
+    if (m_division == 0)
+    {
+        utils::logW("m_division = 0");
+        m_delta_step = 0xFFFF;
+    }
+    else
+        m_delta_step = static_cast<uint16_t>(static_cast<float>(m_tempo) / static_cast<float>(m_division));
+}
+
 }    // namespace HyperSonicDrivers::drivers::midi

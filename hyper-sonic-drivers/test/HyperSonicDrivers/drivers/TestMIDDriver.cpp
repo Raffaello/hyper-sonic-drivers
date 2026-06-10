@@ -25,7 +25,7 @@ using audio::midi::MIDI_META_EVENT_TYPES_LOW;
 using audio::midi::MIDIEvent;
 using utils::ILogger;
 
-TEST(DISABLED_MIDDriver, SEQUENCE_NAME_META_EVENT)
+TEST(MIDDriver, DISABLED_SEQUENCE_NAME_META_EVENT)
 {
     auto device = std::make_shared<devices::DeviceMock<devices::Adlib>>();
 
@@ -42,11 +42,14 @@ TEST(DISABLED_MIDDriver, SEQUENCE_NAME_META_EVENT)
     e.data.insert(e.data.end(), s.begin(), s.end());
     auto midi_track = audio::midi::MIDITrack();
     midi_track.addEvent(e);
+    auto m = std::make_shared<audio::MIDI>(audio::midi::MIDI_FORMAT::SINGLE_TRACK, 1, 100);
+    m->addTrack(midi_track);
 
     //::testing::internal::CaptureStdout();
     ::testing::internal::CaptureStderr();
     MIDDriverMock middrv(device);
-    middrv.protected_processTrack(midi_track, 0);
+    middrv.setMidi(m);
+    middrv.play(0);
     // auto output = ::testing::internal::GetCapturedStdout();
     auto output2 = ::testing::internal::GetCapturedStderr();
 
@@ -100,7 +103,7 @@ TEST(MIDDriver, force_stop_on_long_delta_time_delay)
     EXPECT_FALSE(device->isAcquired());
 }
 
-TEST(DISABLED_MIDDriver, getTempo)
+TEST(MIDDriver, getTempo)
 {
     auto          mf     = files::MIDFile("../fixtures/midifile_sample.mid");
     auto          device = std::make_shared<devices::DeviceMock<devices::Adlib>>();

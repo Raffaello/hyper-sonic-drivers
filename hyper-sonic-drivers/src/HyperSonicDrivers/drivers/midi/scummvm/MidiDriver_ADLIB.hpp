@@ -41,8 +41,8 @@ public:
 
 protected:
     // void onCallback() noexcept override;
-    void onPause() noexcept override { /*TODO*/ };
-    void onResume() noexcept override { /*TODO*/ };
+    void onPause() noexcept override;
+    void onResume() noexcept override;
 
     // MIDI Events
     void noteOff(const uint8_t chan, const uint8_t note) noexcept override;

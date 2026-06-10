@@ -7,6 +7,7 @@
 namespace HyperSonicDrivers::drivers::midi
 {
 using audio::midi::TO_HIGH;
+using utils::logE;
 using utils::logW;
 using utils::logD;
 using utils::logT;
@@ -205,6 +206,13 @@ void IMidiDriver::callback_()
         {
         case MIDI_META_EVENT_TYPES_LOW::META:
         {
+            if (e.data.empty())
+            {
+                logE("META event has no data.");
+                ++m_pos;
+                return;
+            }
+
             const uint8_t type = e.data[0];    // must be < 128
             std::string   str;
             switch (TO_META(type))
@@ -233,6 +241,12 @@ void IMidiDriver::callback_()
                 logT(std::format("Instrument name: {}", str));
                 break;
             case MIDI_META_EVENT::KEY_SIGNATURE:
+                if (e.data.size() < 3)
+                {
+                    logE("KEY_SIGNATURE meta event has insufficient data");
+                    break;
+                }
+
                 logT(std::format("KEY_SIGNATURE: {:d} {:d}", e.data[1], e.data[2]));
                 break;
             case MIDI_META_EVENT::LYRICS:
@@ -262,6 +276,12 @@ void IMidiDriver::callback_()
                 break;
             case MIDI_META_EVENT::SET_TEMPO:
             {
+                if (e.data.size() < 4)
+                {
+                    logE("SET_TEMPO meta event has insufficient data");
+                    break;
+                }
+
                 setTempo((e.data[1] << 16) + (e.data[2] << 8) + (e.data[3]));
                 logT(std::format("Tempo {}, ({} bpm) -- microseconds/tick {}", m_tempo, 60000000 / m_tempo, m_delta_step));
                 break;
@@ -274,6 +294,12 @@ void IMidiDriver::callback_()
                 logT(std::format("Text: {}", str));
                 break;
             case MIDI_META_EVENT::TIME_SIGNATURE:
+                if (e.data.size() < 5)
+                {
+                    logE("TIME_SIGNATURE meta evnt has insufficient data");
+                    break;
+                }
+
                 logT(std::format("TIME_SIGNATURE: {:d}/{:d} - clocks {:d} - bb {:d} ", e.data[1], utils::powerOf2(e.data[2]), e.data[3], e.data[4]));
                 break;
             default:
