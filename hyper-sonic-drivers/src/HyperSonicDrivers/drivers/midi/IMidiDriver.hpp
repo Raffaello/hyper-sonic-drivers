@@ -114,7 +114,7 @@ inline bool IMidiDriver::isOpen() const noexcept
 
 inline void IMidiDriver::pause() noexcept
 {
-    if (m_isPlaying)
+    if (m_isPlaying && !m_paused)
     {
         m_paused = true;
         onPause();
@@ -123,7 +123,7 @@ inline void IMidiDriver::pause() noexcept
 
 inline void IMidiDriver::resume() noexcept
 {
-    if (m_isPlaying)
+    if (m_isPlaying && m_paused)
     {
         m_paused = false;
         onResume();

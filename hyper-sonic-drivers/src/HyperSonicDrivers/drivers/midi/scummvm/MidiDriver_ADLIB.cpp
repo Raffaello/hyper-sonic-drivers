@@ -283,7 +283,7 @@ void MidiDriver_ADLIB::adlibWriteSecondary(uint8_t reg, uint8_t value)
 
 void MidiDriver_ADLIB::onPause() noexcept
 {
-    for (auto& voice : m_voices)
+    for (const auto& voice : m_voices)
     {
         if (voice.isFree())
             continue;
@@ -294,7 +294,7 @@ void MidiDriver_ADLIB::onPause() noexcept
 
 void MidiDriver_ADLIB::onResume() noexcept
 {
-    for (auto& voice : m_voices)
+    for (const auto& voice : m_voices)
     {
         if (voice.isFree())
             continue;

@@ -77,7 +77,7 @@ private:
     // Common::TimerManager::TimerProc _adlibTimerProc;
     // void*                           _adlibTimerParam = nullptr;
 
-    int _timerCounter = 0;
+    // int _timerCounter = 0;
 
     std::array<uint16_t, 9>   _channelTable2;
     std::array<uint16_t, 9>   _curNotTable;
