@@ -299,8 +299,13 @@ void MidiDriver_ADLIB::onResume() noexcept
         if (voice.isFree())
             continue;
 
-        const auto* part = toAdlibPart(voice.getChannel());
-        adlibNoteOnEx(voice.slot, voice.getNote(), part->pitch >> 1);    // ?
+        if (m_opl3Mode)
+        {
+            const auto* part = toAdlibPart(voice.getChannel());
+            adlibNoteOnEx(voice.slot, voice.getNote(), part->pitch >> 1);    // ?
+        }
+        else
+            adlibKeyOnOff(voice.slot);
     }
 }
 
