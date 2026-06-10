@@ -60,12 +60,12 @@ bool OplDriver::open(const audio::mixer::eChannelGroup group,
 
     // TODO: here the acquire should be done.
 
-    hardware::TimerCallBack cb = std::bind_front(&OplDriver::onCallback, this);
+    hardware::TimerCallBack cb = std::bind_front(&OplDriver::callback_, this);
     auto                    p  = std::make_shared<hardware::TimerCallBack>(cb);
-    m_opl->start(p, group, volume, pan);
-
+    m_opl->start(p, group, volume, pan, OplDriver::CLOCK_HZ);
     m_isOpen = true;
-    return true;
+
+    return isOpen();
 }
 
 void OplDriver::close()
@@ -79,23 +79,11 @@ void OplDriver::close()
     // TODO: here the release should be done.
 }
 
-void OplDriver::onCallback() noexcept
-{
-    // TODO: here has to call the midi player/parser to send the next events.
-    // and update the internal ticks/timer to keep tracks of the deltas
+// void OplDriver::onCallback() noexcept
+// {
+// }
 
-
-    // TODO: here could process midi events,
-    //       enqueued in send method
-    //  if queue empty do nothing
-    // must keep track of the last time it was called
-    // and update is internal timer with the midievent delta.
-
-    // NOTE changing this onTimer will effect the currnet MIDDriver using a thread.
-    //      but the same logic of the thread will be performed here.
-}
-
-void OplDriver::pause() const noexcept
+void OplDriver::onPause() noexcept
 {
     for (auto it = m_voicesInUseIndex.begin(); it != m_voicesInUseIndex.end(); ++it)
     {
@@ -106,7 +94,7 @@ void OplDriver::pause() const noexcept
     }
 }
 
-void OplDriver::resume() const noexcept
+void OplDriver::onResume() noexcept
 {
     for (auto it = m_voicesInUseIndex.begin(); it != m_voicesInUseIndex.end(); ++it)
     {

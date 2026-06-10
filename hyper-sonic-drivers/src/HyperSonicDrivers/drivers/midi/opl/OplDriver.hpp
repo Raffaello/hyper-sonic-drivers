@@ -36,13 +36,12 @@ public:
 
     inline void setOP2Bank(const std::shared_ptr<audio::opl::banks::OP2Bank>& op2Bank) noexcept { m_op2Bank = op2Bank; };
 
-    void pause() const noexcept override;
-    void resume() const noexcept override;
-
     inline std::shared_ptr<hardware::opl::OPL> getOpl() const noexcept { return m_opl; };
 
 protected:
-    void onCallback() noexcept override;
+    // void onCallback() noexcept override;
+    void onPause() noexcept override;
+    void onResume() noexcept override;
 
     // MIDI Events
     void noteOff(const uint8_t chan, const uint8_t note) noexcept override;

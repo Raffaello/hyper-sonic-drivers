@@ -8,7 +8,7 @@ constexpr void dead_end()
     utils::throwLogC<std::invalid_argument>("can't call this method");
 }
 
-MT32Driver::MT32Driver(const std::shared_ptr<devices::MT32>& mt32) : IMidiDriver()
+MT32Driver::MT32Driver(const std::shared_ptr<devices::MT32>& mt32)
 {
     if (mt32 == nullptr)
         utils::throwLogC<std::runtime_error>("MT32 device is null");
@@ -31,7 +31,7 @@ bool MT32Driver::open(const audio::mixer::eChannelGroup group, const uint8_t vol
         return false;
 
     // TODO: mostly the same as for OPL
-    hardware::TimerCallBack cb = std::bind_front(&MT32Driver::onCallback, this);
+    hardware::TimerCallBack cb = std::bind_front(&MT32Driver::callback_, this);
     auto                    p  = std::make_shared<hardware::TimerCallBack>(cb);
     m_mt32->start(p, group, volume, pan);
 
@@ -57,10 +57,10 @@ void MT32Driver::send(const uint32_t msg) noexcept
     m_mt32->getService().playMsg(msg);
 }
 
-void MT32Driver::onCallback() noexcept
-{
-    // TODO
-}
+// void MT32Driver::onCallback() noexcept
+// {
+//     // TODO
+// }
 
 void MT32Driver::noteOff(const uint8_t chan, const uint8_t note) noexcept
 {

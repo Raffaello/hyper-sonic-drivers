@@ -21,11 +21,10 @@ public:
 
     void send(const uint32_t msg) noexcept override;
 
-    void pause() const noexcept override { /*TODO*/ };
-    void resume() const noexcept override { /*TODO*/ };
-
 protected:
-    void onCallback() noexcept override;
+    // void onCallback() noexcept override;
+    void onPause() noexcept override {};
+    void onResume() noexcept override {};
 
     // MIDI events (not implemented, directly send MIDI msg to MT32Emu service)
     void noteOff(const uint8_t chan, const uint8_t note) noexcept override;

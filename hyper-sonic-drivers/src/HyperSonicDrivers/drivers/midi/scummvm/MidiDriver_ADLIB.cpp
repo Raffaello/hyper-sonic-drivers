@@ -60,12 +60,13 @@ static AdLibChannel* toAdlibPart(const std::unique_ptr<IMidiChannel>& ap)
     return toAdlibPart(ap.get());
 }
 
-MidiDriver_ADLIB::MidiDriver_ADLIB(const std::shared_ptr<devices::Opl>& opl) : m_opl([&opl] {
+MidiDriver_ADLIB::MidiDriver_ADLIB(const std::shared_ptr<devices::Opl>& opl)
+    : m_opl([&opl] {
             if (opl == nullptr)
                 utils::throwLogC<std::runtime_error>("Device is null ptr");
 
             return opl->getOpl(); }()),
-                                                                               m_opl3Mode(m_opl->type != OplType::OPL2)
+      m_opl3Mode(m_opl->type != OplType::OPL2)
 {
     using audio::midi::MIDI_MAX_CHANNELS;
     using audio::midi::MIDI_PERCUSSION_CHANNEL;
@@ -84,8 +85,7 @@ MidiDriver_ADLIB::MidiDriver_ADLIB(const std::shared_ptr<devices::Opl>& opl) : m
 
 MidiDriver_ADLIB::~MidiDriver_ADLIB()
 {
-    if (m_isOpen)
-        MidiDriver_ADLIB::close();
+    MidiDriver_ADLIB::close();
 }
 
 bool MidiDriver_ADLIB::open(
@@ -95,8 +95,6 @@ bool MidiDriver_ADLIB::open(
 {
     if (m_isOpen)
         return true;
-
-    m_isOpen = true;
 
     for (size_t i = 0; i != m_voices.size(); i++)
     {
@@ -123,9 +121,10 @@ bool MidiDriver_ADLIB::open(
         adlibWriteSecondary(5, 1);
     }
 
-    hardware::TimerCallBack cb = std::bind_front(&MidiDriver_ADLIB::onCallback, this);
+    hardware::TimerCallBack cb = std::bind_front(&MidiDriver_ADLIB::callback_, this);
     auto                    p  = std::make_shared<hardware::TimerCallBack>(cb);
-    m_opl->start(p, group, volume, pan);
+    m_opl->start(p, group, volume, pan, MidiDriver_ADLIB::CLOCK_HZ);
+    m_isOpen = true;
 
     return true;
 }
@@ -134,6 +133,7 @@ void MidiDriver_ADLIB::close()
 {
     if (!m_isOpen)
         return;
+
     m_isOpen = false;
 
     // Stop the OPL timer
@@ -244,40 +244,68 @@ void MidiDriver_ADLIB::adlibWriteSecondary(uint8_t reg, uint8_t value)
     m_opl->writeReg(reg | 0x100, value);
 }
 
-void MidiDriver_ADLIB::onCallback() noexcept
-{
-    // TODO: here has to call the midi parser/player to send the next event(s)
-    // if (_adlibTimerProc)
-    //    (*_adlibTimerProc)(_adlibTimerParam);
+// void MidiDriver_ADLIB::onCallback() noexcept
+// {
+//     // TODO: here has to call the midi parser/player to send the next event(s)
+//     // if (_adlibTimerProc)
+//     //    (*_adlibTimerProc)(_adlibTimerParam);
 
-    _timerCounter += _timerIncrease;
-    while (_timerCounter >= _timerThreshold)
+// _timerCounter += _timerIncrease;
+// while (_timerCounter >= _timerThreshold)
+// {
+//     _timerCounter -= _timerThreshold;
+//     // Sam&Max's OPL3 driver does not have any timer handling like this.
+//     if (m_opl3Mode)
+//         continue;
+
+// for (auto& voice : m_voices)
+// {
+//     if (voice.isFree())
+//         continue;
+
+// if (voice.duration && (voice.duration -= 0x11) <= 0)
+// {
+//     mcOff(&voice);
+//     return;
+// }
+
+// if (voice._s10a.active)
+// {
+//     mcIncStuff(&voice, &voice._s10a, &voice._s11a);
+// }
+// if (voice._s10b.active)
+// {
+//     mcIncStuff(&voice, &voice._s10b, &voice._s11b);
+// }
+// }
+// }
+// }
+
+void MidiDriver_ADLIB::onPause() noexcept
+{
+    for (const auto& voice : m_voices)
     {
-        _timerCounter -= _timerThreshold;
-        // Sam&Max's OPL3 driver does not have any timer handling like this.
-        if (m_opl3Mode)
+        if (voice.isFree())
             continue;
 
-        for (auto& voice : m_voices)
+        adlibKeyOff(voice.slot);
+    }
+}
+
+void MidiDriver_ADLIB::onResume() noexcept
+{
+    for (const auto& voice : m_voices)
+    {
+        if (voice.isFree())
+            continue;
+
+        if (m_opl3Mode)
         {
-            if (voice.isFree())
-                continue;
-
-            if (voice.duration && (voice.duration -= 0x11) <= 0)
-            {
-                mcOff(&voice);
-                return;
-            }
-
-            if (voice._s10a.active)
-            {
-                mcIncStuff(&voice, &voice._s10a, &voice._s11a);
-            }
-            if (voice._s10b.active)
-            {
-                mcIncStuff(&voice, &voice._s10b, &voice._s11b);
-            }
+            const auto* part = toAdlibPart(voice.getChannel());
+            adlibNoteOnEx(voice.slot, voice.getNote(), part->pitch >> 1);    // ?
         }
+        else
+            adlibKeyOnOff(voice.slot);
     }
 }
 
