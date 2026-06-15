@@ -281,7 +281,18 @@ void MidiDriver_ADLIB::adlibWriteSecondary(uint8_t reg, uint8_t value)
 // }
 // }
 
-void MidiDriver_ADLIB::onPause() noexcept
+void MidiDriver_ADLIB::onStop_() noexcept
+{
+    for (auto& voice : m_voices)
+    {
+        if (voice.isFree())
+            continue;
+
+        mcOff(&voice);
+    }
+}
+
+void MidiDriver_ADLIB::onPause_() noexcept
 {
     for (const auto& voice : m_voices)
     {
@@ -292,7 +303,7 @@ void MidiDriver_ADLIB::onPause() noexcept
     }
 }
 
-void MidiDriver_ADLIB::onResume() noexcept
+void MidiDriver_ADLIB::onResume_() noexcept
 {
     for (const auto& voice : m_voices)
     {
@@ -613,7 +624,7 @@ void MidiDriver_ADLIB::mcOff(AdLibVoice* voice)
 
     if (voice->next)
         voice->next->prev = tmp;
-    if (tmp)
+    if (tmp != nullptr)
         tmp->next = voice->next;
     else
         toAdlibPart(voice->getChannel())->voice = voice->next;
@@ -674,9 +685,7 @@ void MidiDriver_ADLIB::adlibKeyOff(int chan)
     uint8_t reg = chan + 0xB0;
     adlibWrite(reg, adlibGetRegValue(reg) & ~0x20);
     if (m_opl3Mode)
-    {
         adlibWriteSecondary(reg, adlibGetRegValueSecondary(reg) & ~0x20);
-    }
 }
 
 uint8_t MidiDriver_ADLIB::struct10OnTimer(Struct10* s10, Struct11* s11)

@@ -25,7 +25,7 @@ public:
     /// </summary>
     /// <param name="note"></param>
     /// <param name="sustain"></param>
-    /// <returns>true = voice released. false=voice sutained</returns>
+    /// <returns>true = voice released. false=voice sustained</returns>
     bool noteOff(const uint8_t note, const uint8_t sustain) noexcept;
     bool pitchBend(const uint16_t bend) noexcept;
     bool ctrl_modulationWheel(const uint8_t value) noexcept;

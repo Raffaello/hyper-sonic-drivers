@@ -23,8 +23,9 @@ public:
 
 protected:
     // void onCallback() noexcept override;
-    void onPause() noexcept override {};
-    void onResume() noexcept override {};
+    void onStop_() noexcept override {};
+    void onPause_() noexcept override {};
+    void onResume_() noexcept override {};
 
     // MIDI events (not implemented, directly send MIDI msg to MT32Emu service)
     void noteOff(const uint8_t chan, const uint8_t note) noexcept override;
