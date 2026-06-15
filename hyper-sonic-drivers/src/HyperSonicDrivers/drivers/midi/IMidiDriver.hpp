@@ -66,9 +66,9 @@ protected:
     // virtual void onCallback() noexcept = 0; // TODO: consider to re-do it
 
     // virtual void onOpen() = 0;
-    virtual void onStop() noexcept   = 0;
-    virtual void onPause() noexcept  = 0;
-    virtual void onResume() noexcept = 0;
+    virtual void onStop_() noexcept   = 0;
+    virtual void onPause_() noexcept  = 0;
+    virtual void onResume_() noexcept = 0;
 
     void callback_();
 
@@ -119,7 +119,7 @@ inline void IMidiDriver::pause() noexcept
     if (m_isPlaying && !m_paused)
     {
         m_paused = true;
-        onPause();
+        onPause_();
     }
 };
 
@@ -128,7 +128,7 @@ inline void IMidiDriver::resume() noexcept
     if (m_isPlaying && m_paused)
     {
         m_paused = false;
-        onResume();
+        onResume_();
     }
 };
 
@@ -145,7 +145,7 @@ inline bool IMidiDriver::isPaused() const noexcept
 inline void IMidiDriver::stop() noexcept
 {
     if (isPlaying())
-        onStop();
+        onStop_();
 
     m_paused    = false;
     m_isPlaying = false;
