@@ -66,6 +66,7 @@ protected:
     // virtual void onCallback() noexcept = 0; // TODO: consider to re-do it
 
     // virtual void onOpen() = 0;
+    virtual void onStop() noexcept   = 0;
     virtual void onPause() noexcept  = 0;
     virtual void onResume() noexcept = 0;
 
@@ -143,9 +144,11 @@ inline bool IMidiDriver::isPaused() const noexcept
 
 inline void IMidiDriver::stop() noexcept
 {
+    if (isPlaying())
+        onStop();
+
     m_paused    = false;
     m_isPlaying = false;
-    // TODO do virtual onStop to stop all the sounds
 }
 
 inline bool IMidiDriver::isTempoChanged() const noexcept

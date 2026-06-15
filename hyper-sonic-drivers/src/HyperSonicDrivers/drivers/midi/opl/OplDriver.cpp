@@ -83,6 +83,15 @@ void OplDriver::close()
 // {
 // }
 
+void OplDriver::onStop() noexcept
+{
+    for (auto it = m_voicesInUseIndex.begin(); it != m_voicesInUseIndex.end(); ++it)
+    {
+        const uint8_t i = *it;
+        m_voices[i]->playNote(false);
+    }
+}
+
 void OplDriver::onPause() noexcept
 {
     for (auto it = m_voicesInUseIndex.begin(); it != m_voicesInUseIndex.end(); ++it)

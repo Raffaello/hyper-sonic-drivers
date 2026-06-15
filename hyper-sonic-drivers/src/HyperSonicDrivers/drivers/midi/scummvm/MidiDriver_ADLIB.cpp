@@ -281,6 +281,11 @@ void MidiDriver_ADLIB::adlibWriteSecondary(uint8_t reg, uint8_t value)
 // }
 // }
 
+void MidiDriver_ADLIB::onStop() noexcept
+{
+    onPause();
+}
+
 void MidiDriver_ADLIB::onPause() noexcept
 {
     for (const auto& voice : m_voices)

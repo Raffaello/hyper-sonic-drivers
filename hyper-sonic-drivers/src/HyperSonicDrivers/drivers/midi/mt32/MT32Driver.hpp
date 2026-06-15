@@ -23,6 +23,7 @@ public:
 
 protected:
     // void onCallback() noexcept override;
+    void onStop() noexcept override {};
     void onPause() noexcept override {};
     void onResume() noexcept override {};
 

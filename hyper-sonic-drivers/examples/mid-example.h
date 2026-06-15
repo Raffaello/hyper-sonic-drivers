@@ -63,6 +63,16 @@ void mid_test_run(drivers::MIDDriver& midDrv, const std::shared_ptr<audio::MIDI>
             spdlog::info("resuming");
             midDrv.resume();
         }
+        else if (i == 20)
+        {
+            spdlog::info("stop (3s)");
+            midDrv.stop();
+            utils::delayMillis(3000);
+            spdlog::info("play again");
+            midDrv.play();
+        }
+        else if (i == 25)
+            midDrv.stop();
     }
 
     auto end_time = std::chrono::system_clock::now();
@@ -72,7 +82,6 @@ void mid_test_run(drivers::MIDDriver& midDrv, const std::shared_ptr<audio::MIDI>
 
 void scummvm_mid_test(const OplEmulator emu, const OplType type, const std::shared_ptr<audio::IMixer>& mixer, const std::shared_ptr<audio::MIDI> midi)
 {
-
     std::shared_ptr<devices::IDevice> device;
     switch (type)
     {
