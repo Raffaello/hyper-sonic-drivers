@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-22.04
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: checkVersion
@@ -55,7 +55,7 @@ jobs:
     needs:
       - check
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: publishVersion
         # if: ${{ github.ref == 'refs/heads/master' }}
         env:
