@@ -21,9 +21,10 @@ public:
 
     inline uint32_t toUint32() const noexcept
     {
-        uint32_t b = type.val + (data[0] << 8);
+        uint32_t b = type.val | (data[0] << 8);
         if (data.size() == 2)
-            b += (data[1] << 16);
+            b |= (data[1] << 16);
+
         return b;
     }
 
