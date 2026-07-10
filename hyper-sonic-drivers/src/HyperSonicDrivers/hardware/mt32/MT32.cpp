@@ -29,6 +29,8 @@ MT32::MT32(const std::filesystem::path& control_rom, const std::filesystem::path
     m_service.getROMInfo(&info);
     utils::logI(std::format("Control ROM info: ID={}, desc={}, sha1={}", info.control_rom_id, info.control_rom_description, info.control_rom_sha1_digest));
     utils::logI(std::format("pcm     ROM info: ID={}, desc={}, sha1={}", info.pcm_rom_id, info.pcm_rom_description, info.pcm_rom_sha1_digest));
+
+    reset();
 }
 
 MT32::~MT32()
@@ -47,7 +49,6 @@ bool MT32::init()
     if (m_init)
         return true;
 
-    reset();
     mt32emu_return_code ret = m_service.openSynth();
     if (ret != MT32EMU_RC_OK)
     {
@@ -64,9 +65,9 @@ bool MT32::init()
 
 void MT32::reset()
 {
-    // TODO: need a way to change this as user requests
+    // TODO: need a way to change these parameters as user request
     m_service.setAnalogOutputMode(MT32Emu::AnalogOutputMode_ACCURATE);
-    m_service.setStereoOutputSampleRate(44100);    // TODO this need to be passed from the mixer
+    m_service.setStereoOutputSampleRate(m_mixer->freq);
     m_service.setSamplerateConversionQuality(MT32Emu::SamplerateConversionQuality_BEST);
     m_service.setOutputGain(1.0f);
     m_service.setReverbOutputGain(1.0f);
