@@ -33,7 +33,7 @@ bool MT32Driver::open(const audio::mixer::eChannelGroup group, const uint8_t vol
     // TODO: mostly the same as for OPL
     hardware::TimerCallBack cb = std::bind_front(&MT32Driver::callback_, this);
     auto                    p  = std::make_shared<hardware::TimerCallBack>(cb);
-    m_mt32->start(p, group, volume, pan);
+    m_mt32->start(p, group, volume, pan, MT32Driver::CLOCK_HZ);
 
     m_isOpen = true;
     return true;

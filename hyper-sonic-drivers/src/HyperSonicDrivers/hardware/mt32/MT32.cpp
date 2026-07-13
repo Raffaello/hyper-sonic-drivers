@@ -23,14 +23,14 @@ MT32::MT32(const std::filesystem::path& control_rom, const std::filesystem::path
 
     ret = m_service.addROMFile(pcm_rom.string().c_str());
     if (ret != MT32EMU_RC_ADDED_PCM_ROM)
-    {
         utils::throwLogC<std::runtime_error>(std::format("can't add pcm ROM data (ret_code: {})", ret));
-    }
 
     mt32emu_rom_info info;
     m_service.getROMInfo(&info);
     utils::logI(std::format("Control ROM info: ID={}, desc={}, sha1={}", info.control_rom_id, info.control_rom_description, info.control_rom_sha1_digest));
     utils::logI(std::format("pcm     ROM info: ID={}, desc={}, sha1={}", info.pcm_rom_id, info.pcm_rom_description, info.pcm_rom_sha1_digest));
+
+    reset();
 }
 
 MT32::~MT32()
@@ -56,24 +56,23 @@ bool MT32::init()
         return false;
     }
 
-    m_init = true;
+    m_output_rate = m_service.getActualStereoOutputSamplerate();
+    utils::logI(std::format("MT32 output_rate = {}", m_output_rate));
 
-    reset();
+    m_init = true;
     return true;
 }
 
 void MT32::reset()
 {
+    // TODO: need a way to change these parameters as user request
+    m_service.setAnalogOutputMode(MT32Emu::AnalogOutputMode_ACCURATE);
+    m_service.setStereoOutputSampleRate(m_mixer->freq);
+    m_service.setSamplerateConversionQuality(MT32Emu::SamplerateConversionQuality_BEST);
     m_service.setOutputGain(1.0f);
     m_service.setReverbOutputGain(1.0f);
     m_service.selectRendererType(MT32Emu::RendererType_BIT16S);
     m_service.setMIDIDelayMode(MT32Emu::MIDIDelayMode_IMMEDIATE);
-
-    // TODO: need a way to change this as user requests
-    m_service.setSamplerateConversionQuality(MT32Emu::SamplerateConversionQuality_BEST);
-
-    m_output_rate = m_service.getActualStereoOutputSamplerate();
-    utils::logI(std::format("MT32 output_rate = {}", m_output_rate));
 }
 
 void MT32::start(

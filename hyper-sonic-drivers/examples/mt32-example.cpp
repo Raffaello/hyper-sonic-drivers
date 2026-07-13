@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
         return 2;
     }
 
-    auto midFile = std::make_shared<files::MIDFile>("MI_intro.mid");
+    auto midFile = std::make_shared<files::MIDFile>("MI_intro_sampleMT32.mid");
     auto midi    = midFile->getMIDI();
 
     drivers::MIDDriver middrv(mt32, eChannelGroup::Music);

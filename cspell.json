@@ -1,8 +1,16 @@
 {
     "version": "0.2",
     "ignorePaths": [],
-    "dictionaryDefinitions": [],
-    "dictionaries": [],
+    "dictionaryDefinitions": [
+        {
+            "name": "custom-dictionary",
+            "path": "./.cspell/custom-dictionary.txt",
+            "addWords": true
+        }
+    ],
+    "dictionaries": [
+        "custom-dictionary"
+    ],
     "words": [
         "Adlib",
         "ADLP",
@@ -62,12 +70,14 @@
         "opldrv",
         "oplnum",
         "osamp",
+        "PCMROM",
         "PCSOUND",
         "pcspkr",
         "Profm",
         "pwsh",
         "Raffaello",
         "RBRN",
+        "reconfig",
         "rfile",
         "rtaudio",
         "Samplerate",

@@ -183,7 +183,7 @@ macro_example(
             hyper-sonic-drivers-static
             spdlog::spdlog
     FIXTURES
-      "../test/fixtures/MI_intro.mid"
+      "../test/fixtures/MI_intro_sampleMT32.mid"
     NONE
 )
 endif()
