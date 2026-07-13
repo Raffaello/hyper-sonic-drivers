@@ -92,6 +92,7 @@ void MT32ReportHandler::onLCDStateUpdated()
 
 void MT32ReportHandler::onMidiMessageLEDStateUpdated(bool ledState)
 {
-    logD("Midi Message LED State Updated");
+    logD(std::format("Midi Message LED State Updated: {}", ledState));
 }
+
 }    // namespace HyperSonicDrivers::hardware::mt32
