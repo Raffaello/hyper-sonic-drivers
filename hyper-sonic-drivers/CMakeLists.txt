@@ -136,7 +136,7 @@ install(FILES
 target_include_directories(${LIB_NAME}
     PUBLIC
         # $<BUILD_INTERFACE:$<TARGET_FILE_DIR:${LIB_NAME}>>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+        # $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
         $<INSTALL_INTERFACE:static/include>
         $<INSTALL_INTERFACE:static/include/test>
