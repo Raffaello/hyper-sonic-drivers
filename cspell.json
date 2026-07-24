@@ -42,6 +42,8 @@
         "gcovr",
         "genmidi",
         "gtest",
+        "hostedtoolcache",
+        "Hotspot",
         "IPCM",
         "kcode",
         "KEYON",
