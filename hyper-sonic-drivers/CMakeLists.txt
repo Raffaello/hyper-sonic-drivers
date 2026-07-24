@@ -104,11 +104,6 @@ write_basic_package_version_file(
   COMPATIBILITY AnyNewerVersion
   )
 
-export(TARGETS ${LIB_NAME}
-    FILE ${CMAKE_BINARY_DIR}/${LIB_NAME}.cmake
-    NAMESPACE HyperSonicDrivers::
-)
-
 install(EXPORT ${LIB_CONF}
     DESTINATION static/cmake
     NAMESPACE HyperSonicDrivers::
@@ -253,6 +248,7 @@ target_link_libraries(${LIB_NAME}
 if(USE_SPDLOG)
     install(FILES
         $<TARGET_FILE:${LIB_SPDLOG}
+        $<TARGET_LINKER_FILE:${LIB_SPDLOG}>
         DESTINATION static/lib
     )
 
@@ -268,18 +264,20 @@ if(USE_SPDLOG)
         EXPORT ${LIB_CONF}
         DESTINATION static/lib
         PUBLIC_HEADER DESTINATION static/include
-)
-
-    export(TARGETS fmt
-        FILE ${CMAKE_BINARY_DIR}/fmt.cmake
-        NAMESPACE HyperSonicDrivers::
     )
 
-    export(TARGETS spdlog
-        FILE ${CMAKE_BINARY_DIR}/spdlog.cmake
+    export(TARGETS
+        ${LIB_NAME}
+        fmt
+        spdlog
+        FILE ${CMAKE_BINARY_DIR}/${LIB_NAME}.cmake
         NAMESPACE HyperSonicDrivers::
     )
-
+else()
+    export(TARGETS ${LIB_NAME}
+        FILE ${CMAKE_BINARY_DIR}/${LIB_NAME}.cmake
+        NAMESPACE HyperSonicDrivers::
+    )
 endif()
 
 if(USE_SDL3 OR USE_SDL2)
