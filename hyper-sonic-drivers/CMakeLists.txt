@@ -80,21 +80,6 @@ install(
     PUBLIC_HEADER DESTINATION static/include
 )
 
-# install(
-#     TARGETS spdlog
-#     EXPORT ${LIB_CONF}
-#     DESTINATION static/lib
-#     PUBLIC_HEADER DESTINATION static/include
-# )
-
-# install(
-#     TARGETS fmt
-#     EXPORT ${LIB_CONF}
-#     DESTINATION static/lib
-#     PUBLIC_HEADER DESTINATION static/include
-# )
-
-
 ## TODO: this is ok, but some includes files i don't want to be "public",
 ##       so it looks like it must be built manually..
 # try defining PUBLIC_HEADER than do an install target (it is at line 31)
@@ -267,9 +252,34 @@ target_link_libraries(${LIB_NAME}
 
 if(USE_SPDLOG)
     install(FILES
-    $<TARGET_FILE:${LIB_SPDLOG}
-    DESTINATION static/lib
+        $<TARGET_FILE:${LIB_SPDLOG}
+        DESTINATION static/lib
+    )
+
+    install(
+        TARGETS fmt
+        EXPORT ${LIB_CONF}
+        DESTINATION static/lib
+        PUBLIC_HEADER DESTINATION static/include
+    )
+
+    install(
+        TARGETS spdlog
+        EXPORT ${LIB_CONF}
+        DESTINATION static/lib
+        PUBLIC_HEADER DESTINATION static/include
 )
+
+    export(TARGETS fmt
+        FILE ${CMAKE_BINARY_DIR}/fmt.cmake
+        NAMESPACE HyperSonicDrivers::
+    )
+
+    export(TARGETS spdlog
+        FILE ${CMAKE_BINARY_DIR}/spdlog.cmake
+        NAMESPACE HyperSonicDrivers::
+    )
+
 endif()
 
 if(USE_SDL3 OR USE_SDL2)

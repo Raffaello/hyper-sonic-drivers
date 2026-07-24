@@ -129,6 +129,7 @@ Logger::Logger() : ILogger()
     SDL_GetLogOutputFunction(&default_log_output_function, &default_log_output_function_userdata);
     instance = this;
     setLevel(eLevel::Info);
+    enable();
 }
 
 Logger::~Logger()
@@ -180,7 +181,8 @@ void Logger::critical(const std::string& str, const eCategory cat)
 
 void Logger::enable()
 {
-    SDL_SetLogOutputFunction(default_log_output_function, default_log_output_function_userdata);
+    SDL_SetLogOutputFunction(&log_output, nullptr);
+    // SDL_SetLogOutputFunction(default_log_output_function, default_log_output_function_userdata);
 }
 
 void Logger::disable()
