@@ -136,7 +136,7 @@ jobs:
           $env:JAVA_HOME = "C:\hostedtoolcache\windows\Java_Temurin-Hotspot_jdk\21.0.3-7\x64"
           [System.Environment]::SetEnvironmentVariable("JAVA_HOME", $env:JAVA_HOME, "Machine")
           $env:PATH = "$env:JAVA_HOME\bin;$env:PATH"
-          $env:SONAR_SCANNER_OPTS = "-Djava.home=$env:JAVA_HOME"
+          # $env:SONAR_SCANNER_OPTS = "-Djava.home=$env:JAVA_HOME"
 
           # ${{ env.HOME }}/sonar/sonar-scanner-${{ env.SONAR_SCANNER_VERSION }}-windows/bin/sonar-scanner.bat --define sonar.host.url="${{ env.SONAR_SERVER_URL }}" --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}"
 
