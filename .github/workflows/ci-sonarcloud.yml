@@ -58,9 +58,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: 21 # - uses: actions/checkout@v5
-      #   with:
-      #     fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          java-version: 21
       - name: install gcovr
         run: pip install gcovr
       - name: create build dir
