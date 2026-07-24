@@ -21,6 +21,7 @@
         "DCMAKE",
         "devel",
         "DGENERATE",
+        "Djava",
         "dosbox",
         "DRRATE",
         "DRVR",
