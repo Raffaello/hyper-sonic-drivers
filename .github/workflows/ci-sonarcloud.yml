@@ -105,6 +105,8 @@ jobs:
       - name: cmake build sonar wrapper
         run: |
           echo $PATH
+          export JAVA_HOME="${{ env.HOME }}/hostedtoolcache/windows/Java_Temurin-Hotspot_jdk/21.0.11-10.0/x64"
+          export PATH=$JAVA_HOME/bin:$PATH
           ${{ env.HOME }}/sonar/build-wrapper-win-x86/build-wrapper-win-x86-64 --out-dir . cmake --build . --config=Debug -j4
         working-directory: build
       - name: CTest (gcov)
