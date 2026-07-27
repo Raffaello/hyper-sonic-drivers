@@ -52,7 +52,7 @@ jobs:
         run: mkdir build
       - name: cmake generator
         run: |
-          cmake -D${{ matrix.use_mt32 }} -D${{ matrix.use_sdl }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ..
+          cmake -DUSE_SPDLOG=ON -D${{ matrix.use_mt32 }} -D${{ matrix.use_sdl }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ..
         working-directory: build
       - name: cmake build
         run: |
