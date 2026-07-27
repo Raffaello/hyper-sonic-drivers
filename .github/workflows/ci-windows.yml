@@ -76,7 +76,7 @@ jobs:
       - name: cmake generator
         run: |
           . "${{ env.VS_PATH }}\VC\Auxiliary\Build\vcvars${{ env.ARCH }}.bat"
-          cmake -D${{ matrix.use_mt32 }} -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }} -A ${{ env.CMAKE_A }} -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ..
+          cmake -DUSE_SPDLOG=ON -D${{ matrix.use_mt32 }} -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }} -A ${{ env.CMAKE_A }} -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ..
         working-directory: build
       - name: cmake build
         run: |
@@ -87,7 +87,7 @@ jobs:
         run: ctest -C ${{ matrix.build_type }} --output-on-failure
         working-directory: build
       - name: cmake install
-        run: cmake --build . --target install --config ${{ matrix.build_type }} -j4
+        run: cmake --build . --target install --config ${{ matrix.build_type }}
         working-directory: build
       - name: cmake package
         run: cmake --build . --target package --config ${{ matrix.build_type }} -j4

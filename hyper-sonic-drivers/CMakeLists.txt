@@ -73,13 +73,6 @@ if(GENERATE_CODE_COVERAGE)
     )
 endif()
 
-install(
-    TARGETS ${LIB_NAME}
-    EXPORT ${LIB_CONF}
-    DESTINATION static/lib
-    PUBLIC_HEADER DESTINATION static/include
-)
-
 ## TODO: this is ok, but some includes files i don't want to be "public",
 ##       so it looks like it must be built manually..
 # try defining PUBLIC_HEADER than do an install target (it is at line 31)
@@ -104,10 +97,6 @@ write_basic_package_version_file(
   COMPATIBILITY AnyNewerVersion
   )
 
-install(EXPORT ${LIB_CONF}
-    DESTINATION static/cmake
-    NAMESPACE HyperSonicDrivers::
-)
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/${LIB_VER}.cmake
     DESTINATION static/cmake
@@ -246,39 +235,42 @@ target_link_libraries(${LIB_NAME}
 )
 
 if(USE_SPDLOG)
-    install(FILES
-        $<TARGET_FILE:${LIB_SPDLOG}
-        $<TARGET_LINKER_FILE:${LIB_SPDLOG}>
-        DESTINATION static/lib
-    )
-
     install(
-        TARGETS fmt
-        EXPORT ${LIB_CONF}
-        DESTINATION static/lib
-        PUBLIC_HEADER DESTINATION static/include
+        DIRECTORY ${fmt_SOURCE_DIR}/include/fmt/
+        DESTINATION include/fmt
     )
 
+    set_target_properties(fmt PROPERTIES PUBLIC_HEADER "")
     install(
-        TARGETS spdlog
+        TARGETS
+            fmt
+            spdlog
+            rtaudio
+            ${LIB_NAME}
         EXPORT ${LIB_CONF}
-        DESTINATION static/lib
+        RUNTIME DESTINATION static/bin
+        LIBRARY DESTINATION static/lib
+        ARCHIVE DESTINATION static/lib
         PUBLIC_HEADER DESTINATION static/include
-    )
-
-    export(TARGETS
-        ${LIB_NAME}
-        fmt
-        spdlog
-        FILE ${CMAKE_BINARY_DIR}/${LIB_NAME}.cmake
-        NAMESPACE HyperSonicDrivers::
     )
 else()
-    export(TARGETS ${LIB_NAME}
-        FILE ${CMAKE_BINARY_DIR}/${LIB_NAME}.cmake
-        NAMESPACE HyperSonicDrivers::
+
+    install(
+        TARGETS
+            rtaudio
+            ${LIB_NAME}
+        EXPORT ${LIB_CONF}
+        RUNTIME DESTINATION static/bin
+        LIBRARY DESTINATION static/lib
+        ARCHIVE DESTINATION static/lib
+        PUBLIC_HEADER DESTINATION static/include
     )
 endif()
+
+install(EXPORT ${LIB_CONF}
+    DESTINATION static/cmake
+    NAMESPACE HyperSonicDrivers::
+)
 
 if(USE_SDL3 OR USE_SDL2)
     install(FILES

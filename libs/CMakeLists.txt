@@ -9,6 +9,7 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(fmt)
+set(fmt_SOURCE_DIR ${fmt_SOURCE_DIR} PARENT_SCOPE)
 
 # spdlog
 set(SPDLOG_FMT_EXTERNAL ON)
