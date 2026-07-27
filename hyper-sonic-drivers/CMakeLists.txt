@@ -245,6 +245,7 @@ if(USE_SPDLOG)
         TARGETS
             fmt
             spdlog
+            rtaudio
             ${LIB_NAME}
         EXPORT ${LIB_CONF}
         RUNTIME DESTINATION static/bin
@@ -256,6 +257,7 @@ else()
 
     install(
         TARGETS
+            rtaudio
             ${LIB_NAME}
         EXPORT ${LIB_CONF}
         RUNTIME DESTINATION static/bin
