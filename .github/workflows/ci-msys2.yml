@@ -26,7 +26,7 @@ jobs:
       matrix:
         build_type: [Debug, Release]
         use_mt32: [USE_MT32=ON]
-        use_sdl: [USE_SDL3=OFF,USE_SDL3=ON, USE_SDL2=ON]
+        use_sdl: [USE_SDL3=OFF, USE_SDL3=ON, USE_SDL2=ON]
         os: ["2022"]
     name: Build Windows
     runs-on: windows-${{ matrix.os }}
@@ -57,7 +57,7 @@ jobs:
         run: mkdir build
       - name: cmake generator
         run: |
-          cmake -G Ninja -D${{ matrix.use_mt32 }} -D${{ matrix.use_sdl }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/_install"  ..
+          cmake -G Ninja -D${{ matrix.use_mt32 }} -D${{ matrix.use_sdl }} -DUSE_SPDLOG=ON -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/_install"  ..
         working-directory: build
       - name: cmake build
         run: |
